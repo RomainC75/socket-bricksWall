@@ -1,3 +1,5 @@
+const SIDE_EFFECT = 1
+
 export default class Ball {
    x: number
    y: number
@@ -35,29 +37,39 @@ export default class Ball {
       }
    }
 
-   bounceOnPaddle(side: boolean): void {
+   bounceOnPaddle(side: boolean, distanceToTheCenter: number): void {
+    console.log('distance : ', distanceToTheCenter)
       //against the left paddle :true
       //against the right paddle :false
+
+      const nudge = distanceToTheCenter * SIDE_EFFECT
       if (side) {
          if (this.directionInDeg < 180) {
-            this.directionInDeg = 180 - this.directionInDeg
+            this.directionInDeg = 180 - this.directionInDeg + nudge
+
          } else if (this.directionInDeg >= 180) {
-            this.directionInDeg = 540 - this.directionInDeg
+            this.directionInDeg = 540 - this.directionInDeg + nudge
          }
       } else {
          if (this.directionInDeg < 90) {
-            this.directionInDeg = 180 - this.directionInDeg
+            this.directionInDeg = 180 - this.directionInDeg - nudge
          } else if (this.directionInDeg >= 270) {
-            this.directionInDeg = 540 - this.directionInDeg
+            this.directionInDeg = 540 - this.directionInDeg - nudge
          }
       }
    }
 
+   verifyAngleAndProtectAgainstOffLimits(){
+    if (this.directionInDeg > 360) {
+        this.directionInDeg = this.directionInDeg % 360
+     }else if(this.directionInDeg <0){
+       this.directionInDeg = 360 + this.directionInDeg
+     }
+   }
+
    move(): void {
-      // console.log('new coodz', this.x, this.y)
-      if (this.directionInDeg > 360) {
-         this.directionInDeg = this.directionInDeg % 360
-      }
+      console.log('new coodz', this.x, this.y, this.directionInDeg)
+      this.verifyAngleAndProtectAgainstOffLimits()
       if (this.isInContactWithSideWalls()) {
          this.bounceOnWall()
       }

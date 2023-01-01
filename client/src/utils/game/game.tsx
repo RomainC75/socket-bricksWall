@@ -88,19 +88,21 @@ export default class Game {
     this.updateCanvas()
     this.drawBar(this.bar1)
     this.drawBar(this.bar2)
-
-    
     
     if (this.isPlayer1Turn && this.ball.getX() < this.bar1_X + this.ballRadius && this.isInFrontOfBar(this.bar1) )  {
-      this.ball.bounceOnPaddle(this.isPlayer1Turn)
+      this.ball.bounceOnPaddle(this.isPlayer1Turn, this.ball.getY()-this.bar1.getY())
       this.isPlayer1Turn = !this.isPlayer1Turn
-    } else if (!this.isPlayer1Turn && this.ball.getX() >= this.bar2_X - this.ballRadius && this.isInFrontOfBar(this.bar2)) {
+    //   && this.isInFrontOfBar(this.bar2)
+    } else if (!this.isPlayer1Turn && this.ball.getX() >= this.bar2_X - this.ballRadius ) {
       console.log('yea')
-      this.ball.bounceOnPaddle(this.isPlayer1Turn)
+    //   this.ball.getY()-this.bar2.getY()
+      this.ball.bounceOnPaddle(this.isPlayer1Turn, 0)
       this.isPlayer1Turn = !this.isPlayer1Turn
     }
+
     this.ball.move()
     this.drawBall()
+
     requestAnimationFrame(() => this.startClock())
   }
 }
