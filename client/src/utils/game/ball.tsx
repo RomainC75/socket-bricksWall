@@ -83,7 +83,6 @@ export default class Ball {
 
    launch(directionInDeg: number): void {
       this.directionInDeg = directionInDeg
-      //   console.log(this.directionInRad)
    }
 
    getX(): number {
