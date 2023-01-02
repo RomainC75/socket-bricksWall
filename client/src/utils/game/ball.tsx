@@ -68,7 +68,7 @@ export default class Ball {
    }
 
    move(): void {
-      console.log('new coodz', this.x, this.y, this.directionInDeg)
+      // console.log('new coodz', this.x, this.y, this.directionInDeg)
       this.verifyAngleAndProtectAgainstOffLimits()
       if (this.isInContactWithSideWalls()) {
          this.bounceOnWall()

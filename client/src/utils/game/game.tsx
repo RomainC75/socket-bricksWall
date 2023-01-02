@@ -1,5 +1,7 @@
 import Bar from './bar'
 import Ball from './ball'
+import BricksHandler from './bricksHandler'
+import Brick from './brick'
 
 export default class Game {
   ctx: CanvasRenderingContext2D
@@ -14,6 +16,7 @@ export default class Game {
   bar1_X: number
   bar2_X: number
   isPlayer1Turn: boolean
+  bricksHandler: BricksHandler
   //P1/left:true
 
   constructor(context: CanvasRenderingContext2D, canvasDimensions: [number, number]) {
@@ -36,6 +39,8 @@ export default class Game {
       this.ballRadius
     )
     this.isPlayer1Turn = false
+    this.bricksHandler = new BricksHandler(canvasDimensions)
+    this.bricksHandler.bricksInitialiser()
   }
 
   createEventsListeners() {
@@ -73,6 +78,19 @@ export default class Game {
     this.ctx.fillRect(bar.getCoordinatesToDraw()[0], bar.getCoordinatesToDraw()[1], this.barWidth, this.barLength)
   }
 
+  drawBrick(brick: Brick){
+    this.ctx.fillStyle = brick.color
+    const topLeftX = brick.getCoordinates()[0] - brick.width/2
+    const topLeftY = brick.getCoordinates()[1] - brick.height/2
+    this.ctx.fillRect(topLeftX, topLeftY, brick.width, brick.height)
+  }
+
+  drawBricks(){
+    this.bricksHandler.getBricks().forEach(brick=>{
+      this.drawBrick(brick)
+    })
+  }
+
   updateCanvas() {
     this.ctx.clearRect(0, 0, this.canvasDimensions[0], this.canvasDimensions[1])
   }
@@ -81,7 +99,7 @@ export default class Game {
     if(this.ball.getY() > bar.getY()-this.barLength/2 && this.ball.getY() < bar.getY()+this.barLength/2){
         return true
     }
-    return false
+    return false   
   }
 
   startClock() {
@@ -103,8 +121,9 @@ export default class Game {
     this.ball.move()
     this.drawBall()
 
+    this.drawBricks()
+
     requestAnimationFrame(() => this.startClock())
   }
 }
 
-export { Game }
