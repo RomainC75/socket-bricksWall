@@ -45,4 +45,11 @@ export default class BricksHandler {
   getBricks():Brick[]{
     return this.bricks
   }
+
+  removeBrickAt(index:number):void{
+    this.bricks.splice(index,1)
+  }
+
+
+
 }

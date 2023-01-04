@@ -103,16 +103,21 @@ export default class Game {
   }
 
   handleIfBouncingOnABrick() {
-    this.bricksHandler.getBricks().forEach((brick: Brick) => {
-      if (
-        (this.ball.directionInDeg < 90 || this.ball.directionInDeg > 270) &&
-        this.ball.isInContactWithLeftSideOfBrick(brick)
-      ) {
-        console.log('==> contact', this.ball.directionInDeg, brick.getX(), brick.getY())
-        this.ball.bouncesOnRightSide()
-
-      }
-    })
+    try {
+      this.bricksHandler.getBricks().forEach((brick: Brick, index:number) => {
+        if (
+          (this.ball.directionInDeg < 90 || this.ball.directionInDeg > 270) &&
+          this.ball.isInContactWithLeftSideOfBrick(brick)
+        ) {
+          console.log('==> contact', this.ball.directionInDeg, brick.getX(), brick.getY())
+          this.ball.bouncesOnRightSide()
+          this.bricksHandler.removeBrickAt(index)
+          throw new Error("");
+        }
+      })
+    } catch (error) {
+      
+    }
   }
 
   handleIfBouncingOnAWall() {
