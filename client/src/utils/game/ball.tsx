@@ -29,7 +29,7 @@ export default class Ball {
     return false
   }
 
-  bounceOnWall(): void {
+  bouncesOnWall(): void {
     if (this.directionInDeg < 90) {
       this.directionInDeg = 360 - this.directionInDeg
     } else if (this.directionInDeg >= 270 && this.directionInDeg < 360) {
@@ -41,29 +41,33 @@ export default class Ball {
     }
   }
 
-  bounceOnRightSideOfBall(){
-   
+  bouncesOnRightSide(){
+   if (this.directionInDeg < 180) {
+      this.directionInDeg = 180 - this.directionInDeg 
+    } else if (this.directionInDeg >= 180) {
+      this.directionInDeg = 540 - this.directionInDeg 
+    }
   }
 
-  bounceOnPaddle(side: boolean, distanceToTheCenter: number): void {
+  bouncesOnPaddle(distanceToTheCenter: number): void {
     console.log('distance : ', distanceToTheCenter)
     //against the left paddle :true
     //against the right paddle :false
 
     const nudge = distanceToTheCenter * SIDE_EFFECT
-    if (side) {
-      if (this.directionInDeg < 180) {
+   //  console.log("side : ", side)
+    
+      if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
         this.directionInDeg = 180 - this.directionInDeg + nudge
-      } else if (this.directionInDeg >= 180) {
+      } else if (this.directionInDeg >= 180 && this.directionInDeg < 270 ) {
         this.directionInDeg = 540 - this.directionInDeg + nudge
-      }
-    } else {
-      if (this.directionInDeg < 90) {
+      } else  if (this.directionInDeg < 90) {
         this.directionInDeg = 180 - this.directionInDeg - nudge
       } else if (this.directionInDeg >= 270) {
         this.directionInDeg = 540 - this.directionInDeg - nudge
       }
-    }
+      
+    
   }
 
   verifyAngleAndProtectAgainstOffLimits() {
@@ -78,7 +82,7 @@ export default class Ball {
     // console.log('new coodz', this.x, this.y, this.directionInDeg)
     this.verifyAngleAndProtectAgainstOffLimits()
     if (this.isInContactWithSideWalls()) {
-      this.bounceOnWall()
+      this.bouncesOnWall()
     }
     // move depending on the directionInDeg
     if (this.directionInDeg >= 0 && this.directionInDeg < 90) {
