@@ -1,8 +1,8 @@
 import Brick from './brick'
 
 const BRICK_STRIP_WIDTH = 100
-const STANDARD_HEIGHT = 20
-const STANDARD_WIDTH = 20
+const STANDARD_HEIGHT = 40
+const STANDARD_WIDTH = 40
 
 export default class BricksHandler {
   bricks: Brick[]
@@ -42,9 +42,16 @@ export default class BricksHandler {
     }
   }
 
+  // oneCentralBrickInitialiser():void{
+  //   this.addBrick(this.canvasDimensions[0]/2,this.canvasDimensions[1]/2,"blue")
+    // this.addBrick(this.canvasDimensions[0]/2,240,"blue")
+  // }
+
   getBricks():Brick[]{
     return this.bricks
   }
+
+  
 
   removeBrickAt(index:number):void{
     this.bricks.splice(index,1)

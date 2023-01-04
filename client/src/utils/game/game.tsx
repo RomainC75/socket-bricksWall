@@ -34,13 +34,14 @@ export default class Game {
     this.ballRadius = 10
     this.ball = new Ball(
       this.canvasDimensions[0] / 2 + 200,
-      this.canvasDimensions[1] - 200,
+      this.canvasDimensions[1] - 50,
       this.canvasDimensions,
       this.ballRadius
     )
     this.isPlayer1Turn = false
     this.bricksHandler = new BricksHandler(canvasDimensions)
     this.bricksHandler.bricksInitialiser()
+    // this.bricksHandler.oneCentralBrickInitialiser()
   }
 
   createEventsListeners() {
@@ -57,7 +58,7 @@ export default class Game {
           if (!this.clockStarted) {
             this.clockStarted = true
             //==============================
-            this.ball.launch(350)
+            this.ball.launch(197)
             this.startClock()
           }
           break
@@ -104,20 +105,39 @@ export default class Game {
 
   handleIfBouncingOnABrick() {
     try {
-      this.bricksHandler.getBricks().forEach((brick: Brick, index:number) => {
+      this.bricksHandler.getBricks().forEach((brick: Brick, index: number) => {
+        // ===
+        console.log('==> is in contact with BOTTOM', this.ball.isInContactWithBottomSideOfBrick(brick))
         if (
           (this.ball.directionInDeg < 90 || this.ball.directionInDeg > 270) &&
           this.ball.isInContactWithLeftSideOfBrick(brick)
         ) {
-          console.log('==> contact', this.ball.directionInDeg, brick.getX(), brick.getY())
+          console.log('==> contact brick"s left side', this.ball.directionInDeg, brick.getX(), brick.getY())
           this.ball.bouncesOnRightSide()
+          this.bricksHandler.removeBrickAt(index)
+          throw new Error("");
+        } else if (
+          this.ball.directionInDeg >= 90 &&
+          this.ball.directionInDeg < 270 &&
+          this.ball.isInContactWithRightSideOfBrick(brick)
+        ) {
+          console.log('==> contact brick"s right side', this.ball.directionInDeg, brick.getX(), brick.getY())
+          this.ball.bouncesOnLeftSide()
+          this.bricksHandler.removeBrickAt(index)
+          throw new Error("");
+        } else if (this.ball.directionInDeg > 180 && this.ball.isInContactWithBottomSideOfBrick(brick)) {
+          console.log('==> contact brick"s bottom side', this.ball.directionInDeg, brick.getX(), brick.getY())
+          this.ball.bouncesOnTopSide()
+          this.bricksHandler.removeBrickAt(index)
+          throw new Error("");
+        } else if (this.ball.directionInDeg < 180 && this.ball.isInContactWithTopSideOfBrick(brick)) {
+          console.log('==> contact brick"s top side', this.ball.directionInDeg, brick.getX(), brick.getY())
+          this.ball.bouncesOnBottomSide()
           this.bricksHandler.removeBrickAt(index)
           throw new Error("");
         }
       })
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   handleIfBouncingOnAWall() {
@@ -145,7 +165,7 @@ export default class Game {
     this.drawBall()
 
     this.drawBricks()
-    
+
     requestAnimationFrame(() => this.startClock())
   }
 }

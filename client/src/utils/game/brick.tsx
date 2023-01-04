@@ -30,10 +30,10 @@ export default class Brick {
   }
 
   getTopSideY():number{
-    return this.y + this.height/2
+    return this.y - this.height/2
   }
 
   getBottomSideY():number{
-    return this.y - this.height/2
+    return this.y + this.height/2
   }
 }

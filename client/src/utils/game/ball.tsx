@@ -41,13 +41,42 @@ export default class Ball {
     }
   }
 
-  bouncesOnRightSide(){
-   if (this.directionInDeg < 180) {
-      this.directionInDeg = 180 - this.directionInDeg 
+  bouncesOnRightSide() {
+    if (this.directionInDeg < 180) {
+      this.directionInDeg = 180 - this.directionInDeg
     } else if (this.directionInDeg >= 180) {
+      this.directionInDeg = 540 - this.directionInDeg
+    }
+  }
+
+  bouncesOnLeftSide() {
+   if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
+      this.directionInDeg = 180 - this.directionInDeg 
+    } else if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
       this.directionInDeg = 540 - this.directionInDeg 
     }
   }
+
+  bouncesOnTopSide(){
+   console.log('===> BOUNCE ! TOP')
+   if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
+      this.directionInDeg = 360 - this.directionInDeg 
+   } else if (this.directionInDeg >= 270) {
+      this.directionInDeg = 360 - this.directionInDeg 
+    }
+  }
+
+  bouncesOnBottomSide(){
+   console.log("old-direction : ", this.directionInDeg)
+   if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
+      this.directionInDeg = 360 - this.directionInDeg 
+    } else if (this.directionInDeg < 90) {
+      this.directionInDeg = 360 - this.directionInDeg 
+    }
+    console.log('new-direction : ', this.directionInDeg)
+  }
+
+  
 
   bouncesOnPaddle(distanceToTheCenter: number): void {
     console.log('distance : ', distanceToTheCenter)
@@ -55,19 +84,17 @@ export default class Ball {
     //against the right paddle :false
 
     const nudge = distanceToTheCenter * SIDE_EFFECT
-   //  console.log("side : ", side)
-    
-      if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
-        this.directionInDeg = 180 - this.directionInDeg + nudge
-      } else if (this.directionInDeg >= 180 && this.directionInDeg < 270 ) {
-        this.directionInDeg = 540 - this.directionInDeg + nudge
-      } else  if (this.directionInDeg < 90) {
-        this.directionInDeg = 180 - this.directionInDeg - nudge
-      } else if (this.directionInDeg >= 270) {
-        this.directionInDeg = 540 - this.directionInDeg - nudge
-      }
-      
-    
+    //  console.log("side : ", side)
+
+    if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
+      this.directionInDeg = 180 - this.directionInDeg + nudge
+    } else if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
+      this.directionInDeg = 540 - this.directionInDeg + nudge
+    } else if (this.directionInDeg < 90) {
+      this.directionInDeg = 180 - this.directionInDeg - nudge
+    } else if (this.directionInDeg >= 270) {
+      this.directionInDeg = 540 - this.directionInDeg - nudge
+    }
   }
 
   verifyAngleAndProtectAgainstOffLimits() {
@@ -116,24 +143,52 @@ export default class Ball {
     return Math.round(this.y)
   }
 
-  isInContactWithLeftSideOfBrick(brick: Brick) {
-    if (this.x < brick.getX() && this.x > brick.getLeftSideX()) {
-      if (this.y <= brick.getTopSideY() && this.y >= brick.getBottomSideY()) {
+  isInContactWithLeftSideOfBrick(brick: Brick):boolean {
+    if (this.x < brick.getX() && this.x > brick.getLeftSideX()-this.radius) {
+      if (this.y >= brick.getTopSideY() && this.y <= brick.getBottomSideY()) {
         return true
       }
     }
+    return false
   }
 
-  isInContactWithBottomLeftCorner(brick: Brick){
-   const cornerCoord = {
+  isInContactWithRightSideOfBrick(brick: Brick):boolean {
+    if (this.x > brick.getX()+brick.width/2 && this.x < brick.getRightSideX()+this.radius) {
+      if (this.y >= brick.getTopSideY() && this.y <= brick.getBottomSideY()) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isInContactWithTopSideOfBrick(brick: Brick):boolean {
+    if (this.y < brick.getY()-brick.height/2 && this.y > brick.getTopSideY() - this.radius) {
+      if (this.x >= brick.getLeftSideX() && this.x <= brick.getRightSideX()) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isInContactWithBottomSideOfBrick(brick: Brick):boolean {
+   if (this.y > brick.getY() && this.y < brick.getBottomSideY() + this.radius) {
+      if (this.x >= brick.getLeftSideX() && this.x <= brick.getRightSideX()) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isInContactWithBottomLeftCorner(brick: Brick) {
+    const cornerCoord = {
       x: brick.getLeftSideX(),
-      y: brick.getBottomSideY()
-   }
-   const xDistanceToTheCorner = this.x - cornerCoord.x
-   const yDistanceToTheCorner = cornerCoord.y - this.y
-   const distanceToTheCorner = Math.sqrt(xDistanceToTheCorner**2 + yDistanceToTheCorner**2 )
-   if(xDistanceToTheCorner>=0 && yDistanceToTheCorner>=0 && distanceToTheCorner <= this.radius){
+      y: brick.getBottomSideY(),
+    }
+    const xDistanceToTheCorner = this.x - cornerCoord.x
+    const yDistanceToTheCorner = cornerCoord.y - this.y
+    const distanceToTheCorner = Math.sqrt(xDistanceToTheCorner ** 2 + yDistanceToTheCorner ** 2)
+    if (xDistanceToTheCorner >= 0 && yDistanceToTheCorner >= 0 && distanceToTheCorner <= this.radius) {
       return true
-   }
+    }
   }
 }
