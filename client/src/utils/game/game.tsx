@@ -78,15 +78,15 @@ export default class Game {
     this.ctx.fillRect(bar.getCoordinatesToDraw()[0], bar.getCoordinatesToDraw()[1], this.barWidth, this.barLength)
   }
 
-  drawBrick(brick: Brick){
+  drawBrick(brick: Brick) {
     this.ctx.fillStyle = brick.color
-    const topLeftX = brick.getCoordinates()[0] - brick.width/2
-    const topLeftY = brick.getCoordinates()[1] - brick.height/2
+    const topLeftX = brick.getCoordinates()[0] - brick.width / 2
+    const topLeftY = brick.getCoordinates()[1] - brick.height / 2
     this.ctx.fillRect(topLeftX, topLeftY, brick.width, brick.height)
   }
 
-  drawBricks(){
-    this.bricksHandler.getBricks().forEach(brick=>{
+  drawBricks() {
+    this.bricksHandler.getBricks().forEach((brick) => {
       this.drawBrick(brick)
     })
   }
@@ -95,28 +95,46 @@ export default class Game {
     this.ctx.clearRect(0, 0, this.canvasDimensions[0], this.canvasDimensions[1])
   }
 
-  isInFrontOfBar(bar:Bar):boolean{
-    if(this.ball.getY() > bar.getY()-this.barLength/2 && this.ball.getY() < bar.getY()+this.barLength/2){
-        return true
+  isInFrontOfBar(bar: Bar): boolean {
+    if (this.ball.getY() > bar.getY() - this.barLength / 2 && this.ball.getY() < bar.getY() + this.barLength / 2) {
+      return true
     }
-    return false   
+    return false
+  }
+
+  handleIfBouncingOnABrick() {
+    this.bricksHandler.getBricks().forEach((brick: Brick) => {
+      if (
+        (this.ball.directionInDeg < 90 || this.ball.directionInDeg > 270) &&
+        this.ball.isInContactWithLeftSideOfBrick(brick)
+      ) {
+        console.log('==> contact', this.ball.directionInDeg, brick.getX(), brick.getY())
+
+
+      }
+    })
+  }
+
+  handleIfBouncingOnAWall() {
+    if (this.isPlayer1Turn && this.ball.getX() < this.bar1_X + this.ballRadius && this.isInFrontOfBar(this.bar1)) {
+      this.ball.bounceOnPaddle(this.isPlayer1Turn, this.ball.getY() - this.bar1.getY())
+      this.isPlayer1Turn = !this.isPlayer1Turn
+      //   && this.isInFrontOfBar(this.bar2)
+    } else if (!this.isPlayer1Turn && this.ball.getX() >= this.bar2_X - this.ballRadius) {
+      console.log('yea')
+      //   this.ball.getY()-this.bar2.getY()
+      this.ball.bounceOnPaddle(this.isPlayer1Turn, 0)
+      this.isPlayer1Turn = !this.isPlayer1Turn
+    }
   }
 
   startClock() {
     this.updateCanvas()
     this.drawBar(this.bar1)
     this.drawBar(this.bar2)
-    
-    if (this.isPlayer1Turn && this.ball.getX() < this.bar1_X + this.ballRadius && this.isInFrontOfBar(this.bar1) )  {
-      this.ball.bounceOnPaddle(this.isPlayer1Turn, this.ball.getY()-this.bar1.getY())
-      this.isPlayer1Turn = !this.isPlayer1Turn
-    //   && this.isInFrontOfBar(this.bar2)
-    } else if (!this.isPlayer1Turn && this.ball.getX() >= this.bar2_X - this.ballRadius ) {
-      console.log('yea')
-    //   this.ball.getY()-this.bar2.getY()
-      this.ball.bounceOnPaddle(this.isPlayer1Turn, 0)
-      this.isPlayer1Turn = !this.isPlayer1Turn
-    }
+
+    this.handleIfBouncingOnAWall()
+    this.handleIfBouncingOnABrick()
 
     this.ball.move()
     this.drawBall()
@@ -126,4 +144,3 @@ export default class Game {
     requestAnimationFrame(() => this.startClock())
   }
 }
-

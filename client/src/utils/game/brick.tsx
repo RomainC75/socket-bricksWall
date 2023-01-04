@@ -13,5 +13,27 @@ export default class Brick {
   getCoordinates():[number,number]{
     return [this.x,this.y]
   }
+  getX(){
+    return this.x
+  }
+  getY(){
+    return this.y
+  }
   
+
+  getLeftSideX():number{
+    return this.x - this.width/2
+  }
+
+  getRightSideX():number{
+    return this.x + this.width/2
+  }
+
+  getTopSideY():number{
+    return this.y + this.height/2
+  }
+
+  getBottomSideY():number{
+    return this.y - this.height/2
+  }
 }
