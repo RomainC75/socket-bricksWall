@@ -41,6 +41,8 @@ export default class Ball {
     }
   }
 
+
+  // Bounce on brick
   bouncesOnRightSide() {
     if (this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg
@@ -48,7 +50,6 @@ export default class Ball {
       this.directionInDeg = 540 - this.directionInDeg
     }
   }
-
   bouncesOnLeftSide() {
    if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg 
@@ -56,36 +57,17 @@ export default class Ball {
       this.directionInDeg = 540 - this.directionInDeg 
     }
   }
-
   bouncesOnTopSide(){
-   console.log('===> BOUNCE ! TOP')
-   if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
-      this.directionInDeg = 360 - this.directionInDeg 
-   } else if (this.directionInDeg >= 270) {
-      this.directionInDeg = 360 - this.directionInDeg 
-    }
+   this.directionInDeg = 360 - this.directionInDeg 
   }
-
   bouncesOnBottomSide(){
-   console.log("old-direction : ", this.directionInDeg)
-   if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
-      this.directionInDeg = 360 - this.directionInDeg 
-    } else if (this.directionInDeg < 90) {
-      this.directionInDeg = 360 - this.directionInDeg 
-    }
-    console.log('new-direction : ', this.directionInDeg)
+   this.directionInDeg = 360 - this.directionInDeg 
   }
 
   
 
   bouncesOnPaddle(distanceToTheCenter: number): void {
-    console.log('distance : ', distanceToTheCenter)
-    //against the left paddle :true
-    //against the right paddle :false
-
     const nudge = distanceToTheCenter * SIDE_EFFECT
-    //  console.log("side : ", side)
-
     if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg + nudge
     } else if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
@@ -106,7 +88,6 @@ export default class Ball {
   }
 
   move(): void {
-    // console.log('new coodz', this.x, this.y, this.directionInDeg)
     this.verifyAngleAndProtectAgainstOffLimits()
     if (this.isInContactWithSideWalls()) {
       this.bouncesOnWall()
@@ -143,6 +124,7 @@ export default class Ball {
     return Math.round(this.y)
   }
 
+  // is in Contact with a Brick
   isInContactWithLeftSideOfBrick(brick: Brick):boolean {
     if (this.x < brick.getX() && this.x > brick.getLeftSideX()-this.radius) {
       if (this.y >= brick.getTopSideY() && this.y <= brick.getBottomSideY()) {

@@ -106,35 +106,29 @@ export default class Game {
   handleIfBouncingOnABrick() {
     try {
       this.bricksHandler.getBricks().forEach((brick: Brick, index: number) => {
-        // ===
-        console.log('==> is in contact with BOTTOM', this.ball.isInContactWithBottomSideOfBrick(brick))
         if (
           (this.ball.directionInDeg < 90 || this.ball.directionInDeg > 270) &&
           this.ball.isInContactWithLeftSideOfBrick(brick)
         ) {
-          console.log('==> contact brick"s left side', this.ball.directionInDeg, brick.getX(), brick.getY())
           this.ball.bouncesOnRightSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error("");
+          throw new Error('')
         } else if (
           this.ball.directionInDeg >= 90 &&
           this.ball.directionInDeg < 270 &&
           this.ball.isInContactWithRightSideOfBrick(brick)
         ) {
-          console.log('==> contact brick"s right side', this.ball.directionInDeg, brick.getX(), brick.getY())
           this.ball.bouncesOnLeftSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error("");
+          throw new Error('')
         } else if (this.ball.directionInDeg > 180 && this.ball.isInContactWithBottomSideOfBrick(brick)) {
-          console.log('==> contact brick"s bottom side', this.ball.directionInDeg, brick.getX(), brick.getY())
           this.ball.bouncesOnTopSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error("");
+          throw new Error('')
         } else if (this.ball.directionInDeg < 180 && this.ball.isInContactWithTopSideOfBrick(brick)) {
-          console.log('==> contact brick"s top side', this.ball.directionInDeg, brick.getX(), brick.getY())
           this.ball.bouncesOnBottomSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error("");
+          throw new Error('')
         }
       })
     } catch (error) {}
