@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,QAAQ,CAAA;EACJ,UAAU,EAAC,IAAI;CAClB",
+    "sources": [
+        "getPing.scss"
+    ],
+    "names": [],
+    "file": "getPing.css"
+}

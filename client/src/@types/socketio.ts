@@ -5,6 +5,7 @@ export interface SocketContextInterface {
   pingStamp: number | null
   setPingStamp: (timeStamp: number)=>void
   lastCalculatedPing: number | null
+  setLastCalculatedPing: (timestamp: number|null)=>void
   isConnectedToSocket: boolean
   
 }

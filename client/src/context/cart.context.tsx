@@ -68,6 +68,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         pingStamp,
         setPingStamp,
         lastCalculatedPing,
+        setLastCalculatedPing,
         isConnectedToSocket,
       }}
     >

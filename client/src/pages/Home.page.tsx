@@ -41,6 +41,7 @@ export const Homepage = () => {
         Connected to server :
         {isConnectedToSocket ? <span className="circle valid"></span> :  <span className="circle notValid"></span>}
       </div>
+      <br/>
       <GetPing/>
       {isConnectedAsUser ? <Discussion /> : <Connection />}
     </div>
