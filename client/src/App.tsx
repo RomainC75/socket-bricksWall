@@ -1,5 +1,3 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { GamePage } from './pages/Game.page';
 import { Route, Routes } from 'react-router-dom';
