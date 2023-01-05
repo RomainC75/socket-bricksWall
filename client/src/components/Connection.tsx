@@ -18,7 +18,6 @@ const Connection = (): JSX.Element => {
         username: usernameState,
         socketID: socket.id
       })
-
     }
   }
 

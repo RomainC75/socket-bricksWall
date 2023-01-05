@@ -14,7 +14,8 @@ export interface ServerToClientEvents {
   noArg: () => void
   basicEmit: (a: number, b: string, c: Buffer) => void
   withAck: (d: string, callback: (e: number) => void) => void
-  connected_users: (data: string[]) => void
+  connected_users: (data: ConnectedUsersInterface[]) => void
+  user_already_used: ()=>void
   pong: ()=>void
 }
 
@@ -22,4 +23,10 @@ export interface ClientToServerEvents {
   hello: () => void
   new_username: (data: { username: string; socketID: string }) => void
   ping: (socketId:string) => void
+}
+
+
+export interface ConnectedUsersInterface{
+  username: string
+  socketID: string
 }

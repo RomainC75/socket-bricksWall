@@ -11,8 +11,6 @@ export const GetPing = () => {
   const handlePing = () => {
     if(socket){
       const timestamp1 = ping(socket)
-
-      console.log('set ping stamp : ', timestamp1)
       setLastCalculatedPing(null)
       setPingStamp(timestamp1)
     }

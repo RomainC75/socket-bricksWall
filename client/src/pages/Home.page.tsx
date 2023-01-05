@@ -4,6 +4,7 @@ import { SocketContext } from '../context/cart.context'
 import Discussion from '../components/Discussion'
 import Connection from '../components/Connection'
 import { GetPing } from '../components/GetPing'
+import toast, { Toaster } from 'react-hot-toast'
 
 export const Homepage = () => {
   const { socket, isConnectedToSocket } = useContext(SocketContext) as SocketContextInterface
@@ -36,6 +37,7 @@ export const Homepage = () => {
 
   return (
     <div className="HomePage">
+      <Toaster/>
       <h1>Socket Brick</h1>
       <div className="tab indicator">
         Connected to server :
