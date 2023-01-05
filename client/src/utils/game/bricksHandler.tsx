@@ -57,6 +57,4 @@ export default class BricksHandler {
     this.bricks.splice(index,1)
   }
 
-
-
 }
