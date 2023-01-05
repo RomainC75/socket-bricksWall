@@ -1,0 +1,258 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var mocha_1 = require("@testdeck/mocha");
+var chai_1 = require("chai");
+var _1 = require("./");
+var Tester = /** @class */ (function () {
+    function Tester() {
+    }
+    Tester.prototype.generalParse = function () {
+        var parser = new _1.MongooseQueryParser();
+        var qry = 'date=2016-01-01&boolean=true&integer=10&regexp=/foobar/i&null=null&!notexists';
+        var parsed = parser.parse(qry);
+        chai_1.assert.isNotNull(parsed.filter);
+        chai_1.assert.isOk(parsed.filter['date'] instanceof Date);
+        chai_1.assert.isOk(parsed.filter['boolean'] === true);
+        chai_1.assert.isOk(parsed.filter['integer'] === 10);
+        chai_1.assert.isOk(parsed.filter['regexp'] instanceof RegExp);
+        chai_1.assert.isOk(parsed.filter['null'] === null);
+        chai_1.assert.isFalse(parsed.filter['notexists']['$exists']);
+    };
+    Tester.prototype.blacklistTest = function () {
+        var parser = new _1.MongooseQueryParser({ blacklist: ['apiKey'] });
+        var qry = "id=some-id-here&apiKey=e9117e5c-c405-489b-9c12-d9f398c7a112";
+        var parsed = parser.parse(qry);
+        chai_1.assert.exists(parsed.filter);
+        chai_1.assert.notExists(parsed.filter.apiKey);
+    };
+    Tester.prototype.parsedObjectBlacklistTest = function () {
+        var parser = new _1.MongooseQueryParser({ blacklist: ['apiKey'] });
+        var qry = {
+            filter: '{"apiKey":"e9117e5c-c405-489b-9c12-d9f398c7a112"}'
+        };
+        var parsed = parser.parse(qry);
+        chai_1.assert.exists(parsed.filter);
+        chai_1.assert.notExists(parsed.filter.apiKey);
+    };
+    Tester.prototype.jsonFilterBlcaklistTest = function () {
+        var options = { blacklist: ['key1', 'key3'] };
+        var parser = new _1.MongooseQueryParser(options);
+        var obj = {
+            $or: [
+                { key1: 'value1' },
+                { key2: { $in: ['key3', 'key2'] } },
+                { key3: 'value3' }
+            ]
+        };
+        var qry = "filter=" + JSON.stringify(obj) + "&name=Google";
+        var parsed = parser.parse(qry);
+        chai_1.assert.isArray(parsed.filter['$or']);
+        chai_1.assert.isOk(parsed.filter['name'] === 'Google');
+        chai_1.assert.isNotOk(parsed.filter['$or'].some(function (obj) {
+            options.blacklist.forEach(function (key) { return obj.hasOwnProperty(key); });
+        }));
+    };
+    Tester.prototype.customDateFormatParse = function () {
+        var parser = new _1.MongooseQueryParser({ dateFormat: ['yyyyMMdd', 'yyyy-MM-dd'] });
+        var qry = "d1=date(20201001)&d2=2020-01-01&d3=09:20&d4=2020";
+        var parsed = parser.parse(qry);
+        chai_1.assert.exists(parsed.filter);
+        chai_1.assert.isTrue(parsed.filter.d1 instanceof Date);
+        chai_1.assert.isTrue(parsed.filter.d2 instanceof Date);
+        chai_1.assert.isNotTrue(parsed.filter.d3 instanceof Date);
+        chai_1.assert.isTrue(typeof parsed.filter.d4 === 'number');
+    };
+    Tester.prototype.dateParse = function () {
+        var parser = new _1.MongooseQueryParser();
+        var qry = "d1=2020-10-01&d2=2020-01&d3=09:20&d4=2020";
+        var parsed = parser.parse(qry);
+        chai_1.assert.exists(parsed.filter);
+        chai_1.assert.isTrue(parsed.filter.d1 instanceof Date);
+        chai_1.assert.isTrue(parsed.filter.d2 instanceof Date);
+        chai_1.assert.isTrue(parsed.filter.d3 instanceof Date);
+        chai_1.assert.isTrue(typeof parsed.filter.d4 === 'number');
+    };
+    Tester.prototype.generalParse2 = function () {
+        var parser = new _1.MongooseQueryParser();
+        var predefined = {
+            vip: { name: { $in: ['Google', 'Microsoft', 'NodeJs'] } },
+            sentStatus: 'sent'
+        };
+        var parsed = parser.parse('${vip}&status=${sentStatus}&timestamp>2017-10-01&author.firstName=/john/i&limit=100&skip=50&sort=-timestamp&select=name&populate=children', predefined);
+        chai_1.assert.isOk(parsed.filter['status'] === predefined.sentStatus);
+        chai_1.assert.isOk(parsed.filter['name'].$in.length === 3); // checking parsing of ${vip}
+        chai_1.assert.isOk(parsed.filter['timestamp']['$gt'] instanceof Date);
+        chai_1.assert.isOk(parsed.filter['author.firstName'] instanceof RegExp);
+        chai_1.assert.isOk(parsed.limit === 100);
+        chai_1.assert.isOk(parsed.skip === 50);
+        chai_1.assert.isNotNull(parsed.sort);
+        chai_1.assert.isNotNull(parsed.select);
+        chai_1.assert.isNotNull(parsed.populate);
+    };
+    Tester.prototype.populateParse = function () {
+        var parser = new _1.MongooseQueryParser();
+        var qry = '_id=1&populate=serviceSalesOrders,customer.category,customer.name';
+        var parsed = parser.parse(qry);
+        chai_1.assert.isOk(parsed.populate.length === 2);
+    };
+    Tester.prototype.deepPopulateParse = function () {
+        var parser = new _1.MongooseQueryParser();
+        var qry = '_id=1&populate=p1,p2:p3.p4,p2:p3:p5,p6:p7';
+        var parsed = parser.parse(qry);
+        chai_1.assert.isNotEmpty(parsed.populate);
+        chai_1.assert.isTrue(parsed.populate.length === 3);
+        for (var _i = 0, _a = parsed.populate; _i < _a.length; _i++) {
+            var p = _a[_i];
+            if (p.path === 'p2') {
+                chai_1.assert.isTrue(p.populate.path === 'p3');
+                chai_1.assert.isTrue(p.populate.select.includes('p4'));
+                chai_1.assert.isTrue(p.populate.populate.path === 'p5');
+            }
+            if (p.path === 'p6') {
+                chai_1.assert.isTrue(p.populate.path === 'p7');
+            }
+        }
+    };
+    Tester.prototype.builtInCastersTest = function () {
+        var parser = new _1.MongooseQueryParser();
+        var qry = 'key1=string(10)&key2=date(2017-10-01)&key3=string(null)';
+        var parsed = parser.parse(qry);
+        chai_1.assert.isOk(typeof parsed.filter['key1'] === 'string');
+        chai_1.assert.isOk(parsed.filter['key2'] instanceof Date);
+        chai_1.assert.isOk(typeof parsed.filter['key3'] === 'string');
+    };
+    Tester.prototype.parseCaster = function () {
+        var parser = new _1.MongooseQueryParser({ casters: { $: function (val) { return '$' + val; } } });
+        var qry = '_id=$(1)';
+        var parsed = parser.parse(qry);
+        chai_1.assert.equal('$1', parsed.filter['_id']);
+    };
+    Tester.prototype.parseJsonFilter = function () {
+        var parser = new _1.MongooseQueryParser();
+        var obj = {
+            $or: [
+                { key1: 'value1' },
+                { key2: 'value2' }
+            ]
+        };
+        var qry = "filter=" + JSON.stringify(obj) + "&name=Google";
+        var parsed = parser.parse(qry);
+        chai_1.assert.isArray(parsed.filter['$or']);
+        chai_1.assert.isOk(parsed.filter['name'] === 'Google');
+    };
+    Tester.prototype.parsePredefined = function () {
+        var parser = new _1.MongooseQueryParser();
+        var preDefined = {
+            isActive: { status: { $in: ['In Progress', 'Pending'] } },
+            vip: ['KFC', 'Google', 'MS'],
+            secret: 'my_secret',
+            mykey: 'realkey'
+        };
+        // test predefined query as key
+        var qry = '${isActive}&name&${mykey}=1';
+        var parsed = parser.parse(qry, preDefined);
+        chai_1.assert.isNotNull(parsed.filter['status']);
+        chai_1.assert.isOk(!parsed.filter['${isActive}']);
+        chai_1.assert.isOk(parsed.filter['realkey'] === 1);
+        // test predefined query as value
+        qry = 'secret=${secret}';
+        parsed = parser.parse(qry, preDefined);
+        chai_1.assert.isOk(parsed.filter['secret'] === preDefined.secret);
+        // test predefined query in json
+        qry = 'filter={"$and": ["${isActive}", {"customer": "VDF"}]}';
+        parsed = parser.parse(qry, preDefined);
+        chai_1.assert.isNotNull(parsed.filter['$and'][0].status);
+    };
+    __decorate([
+        mocha_1.test('should parse general query'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "generalParse", null);
+    __decorate([
+        mocha_1.test('should not show black listed property in filter'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "blacklistTest", null);
+    __decorate([
+        mocha_1.test('should not show black listed property in parsed object filter query'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "parsedObjectBlacklistTest", null);
+    __decorate([
+        mocha_1.test('should not show black listed property in JSON filter query'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "jsonFilterBlcaklistTest", null);
+    __decorate([
+        mocha_1.test('should parse dates with custom formats'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "customDateFormatParse", null);
+    __decorate([
+        mocha_1.test('should parse dates'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "dateParse", null);
+    __decorate([
+        mocha_1.test('should parse query with string templates'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "generalParse2", null);
+    __decorate([
+        mocha_1.test('should parse populate query'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "populateParse", null);
+    __decorate([
+        mocha_1.test('should parse deep populate'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "deepPopulateParse", null);
+    __decorate([
+        mocha_1.test('should parse built in casters'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "builtInCastersTest", null);
+    __decorate([
+        mocha_1.test('should parse custom caster'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "parseCaster", null);
+    __decorate([
+        mocha_1.test('should parse json filter'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "parseJsonFilter", null);
+    __decorate([
+        mocha_1.test('should parse predefined query objects'),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", []),
+        __metadata("design:returntype", void 0)
+    ], Tester.prototype, "parsePredefined", null);
+    Tester = __decorate([
+        mocha_1.suite('test.spec')
+    ], Tester);
+    return Tester;
+}());
+//# sourceMappingURL=test.spec.js.map

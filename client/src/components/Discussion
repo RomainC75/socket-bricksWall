@@ -1,7 +1,0 @@
-import React from 'react'
-
-export const Discussion:JSX.Element = () => {
-  return (
-    <div>Discussion</div>
-  )
-}
