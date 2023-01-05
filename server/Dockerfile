@@ -12,4 +12,4 @@ ADD . /src
 
 CMD npm start
 
-# docker run -p 5000:5000 -v ${PWD}:/app flask-rest-api
+# docker run -p 5000:5000 -v ${PWD}:/src socketbrick

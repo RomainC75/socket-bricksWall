@@ -7,6 +7,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+//execute ./config/index.js file
 require("./config")(app);
 
 // view engine setup
@@ -16,10 +17,14 @@ app.set('view engine', 'jade');
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+
 
 // error handler
 app.use(function(err, req, res, next) {

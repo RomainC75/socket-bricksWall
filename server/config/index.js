@@ -1,6 +1,5 @@
 // We reuse this import in order to have access to the `body` property in requests
 const express = require("express");
-
 const path = require('path')
 
 // ℹ️ Responsible for the messages you see in the terminal as requests are coming in
@@ -15,6 +14,8 @@ const cookieParser = require("cookie-parser");
 // unless the request if from the same domain, by default express wont accept POST requests
 const cors = require("cors");
 
+
+
 // Middleware configuration
 module.exports = (app) => {
   // Because this is a server that will accept requests from outside and it will be hosted ona server with a `proxy`, express needs to know that it should trust that setting.
@@ -26,6 +27,7 @@ module.exports = (app) => {
     cors({
       credentials: true,
       origin: process.env.ORIGIN || "http://localhost:3000",
+      methods: ['GET', 'POST']
     })
   );
 
@@ -37,4 +39,8 @@ module.exports = (app) => {
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
+  
+    // chatGame(io)
+    
 };
+
