@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,YAAY,CAAA;EACR,SAAS,EAAC,KAAK;EACf,MAAM,EAAE,KAAK;EACb,MAAM,EAAC,eAAe;EACtB,MAAM,EAAC,MAAM;CAChB",
+    "sources": [
+        "messagesBox.scss"
+    ],
+    "names": [],
+    "file": "messagesBox.css"
+}

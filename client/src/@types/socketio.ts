@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io-client'
+import {MessageInterface} from './message'
 
 export interface SocketContextInterface {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>|null
@@ -7,7 +8,10 @@ export interface SocketContextInterface {
   lastCalculatedPing: number | null
   setLastCalculatedPing: (timestamp: number|null)=>void
   isConnectedToSocket: boolean
-  
+  isConnectedAsUser: boolean
+  connectedUsers: ConnectedUsersInterface[]
+  privateMessages: MessageInterface[]
+  publicMessages: MessageInterface[]
 }
 
 export interface ServerToClientEvents {
@@ -17,16 +21,23 @@ export interface ServerToClientEvents {
   connected_users: (data: ConnectedUsersInterface[]) => void
   user_already_used: ()=>void
   pong: ()=>void
+  credential: (cred: CredentialsInterface)=>void
 }
 
 export interface ClientToServerEvents {
-  hello: () => void
-  new_username: (data: { username: string; socketID: string }) => void
+  new_username: (data: ConnectedUsersInterface) => void
   ping: (socketId:string) => void
+  disconnect: (data: ConnectedUsersInterface)=>void
 }
 
 
 export interface ConnectedUsersInterface{
   username: string
   socketID: string
+  self?:boolean
+}
+
+export interface CredentialsInterface{
+  username: string
+  password: string
 }

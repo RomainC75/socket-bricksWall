@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { SocketContext } from '../context/cart.context'
+import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketio'
 
 
@@ -19,6 +19,7 @@ const Connection = (): JSX.Element => {
         socketID: socket.id
       })
     }
+    setUsernameState('')
   }
 
 

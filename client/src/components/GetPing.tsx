@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { ping } from '../utils/ping'
 import { ServerToClientEvents, ClientToServerEvents, SocketContextInterface } from '../@types/socketio'
-import { SocketContext } from '../context/cart.context'
+import { SocketContext } from '../context/socket.context'
 
 import './styles/getPing.css'
 

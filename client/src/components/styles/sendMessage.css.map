@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,YAAY,CAAA;EACR,KAAK,EAAC,IAAI;CACb",
+    "sources": [
+        "sendMessage.scss"
+    ],
+    "names": [],
+    "file": "sendMessage.css"
+}

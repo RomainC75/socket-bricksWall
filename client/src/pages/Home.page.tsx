@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { ServerToClientEvents, ClientToServerEvents, SocketContextInterface } from '../@types/socketio'
-import { SocketContext } from '../context/cart.context'
+import { SocketContext } from '../context/socket.context'
 import Discussion from '../components/Discussion'
 import Connection from '../components/Connection'
 import { GetPing } from '../components/GetPing'
 import toast, { Toaster } from 'react-hot-toast'
+import { Chat } from '../components/Chat'
 
 export const Homepage = () => {
-  const { socket, isConnectedToSocket } = useContext(SocketContext) as SocketContextInterface
-  const [username, setUsername] = useState<string | null>('bob')
+  const { socket, isConnectedToSocket, isConnectedAsUser } = useContext(SocketContext) as SocketContextInterface
   
-  const [isConnectedAsUser, setIsConnectedAsUser] = useState<boolean>(false)
-
+  
   const handleUsername = () => {
     // e.preventDefault()
     // console.log(username)
     // socket.emit('username', username)
     // setConnected(true)
     // add the property "username"
+
     // socket.auth = { username }
     // try to connect
 
@@ -45,7 +45,7 @@ export const Homepage = () => {
       </div>
       <br/>
       <GetPing/>
-      {isConnectedAsUser ? <Discussion /> : <Connection />}
+      {isConnectedAsUser ? <Chat /> : <Connection />}
     </div>
   )
 }
