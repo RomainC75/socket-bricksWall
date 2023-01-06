@@ -1,4 +1,4 @@
-const users = ['bib', 'bab', 'boub']
+let users = []
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -15,27 +15,37 @@ const chatGame = (io) => {
   })
 
   io.on('connection', (socket) => {
-    console.log('socket io ', socket.id)
-
+    // console.log('socket io ', socket.id)
     socket.on('new_username', (data) => {
-      console.log('new_username', data)
-      users.push(data)
       console.log(`send to ${data.socketID}`)
-      socket.emit('connected_users', {
-        from: socket.id,
-        message: 'yeat',
-      })
+      if(!users.find(usr=>usr.username===data.username)){
+        users.push(data)
+        socket.emit('connected_users', users)
+        console.log(users)
+      }else{
+        io.to(data.socketID).emit('user_already_used')
+      }
       
-      io.to(data.socketID).emit('connected_users', {
-        from: socket.id,
-        message: 'yeat',
-      })
     })
     socket.on('ping',socketId=>{
       console.log('=>ping received ')
       io.to(socketId).emit('pong')
     })
+
+    socket.on('disconnect', ()=>{
+      socket.broadcast.emit('user disconnected', socket.id)
+      users = users.filter(user=>socket.id!==user.socketID)
+      socket.emit('connected_users', users)
+      console.log('=>disconnect', users)
+    })
   })
 }
 
 module.exports = { chatGame }
+
+
+
+// io.to(data.socketID).emit('connected_users', {
+//   from: socket.id,
+//   message: 'yeat',
+// })
