@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketio'
 import MessagesBox from './MessagesBox'
@@ -24,6 +24,16 @@ export const Chat = () => {
     }
   }
 
+  useEffect(()=>{
+    setFilteredMessages(privateMessages.filter((user) => user.from === selectedChannel || user.to === selectedChannel))
+    console.log('===>',privateMessages)
+  },[privateMessages])
+
+  
+  useEffect(()=>{
+
+  },[publicMessages])
+
   return (
     <div className="Chat">
       <div className="tabs">
@@ -41,7 +51,7 @@ export const Chat = () => {
       <MessagesBox conversation={filteredMessages} isPublic={isPublic} />
       <SendMessage selectedChannel={selectedChannel} />
 
-      {JSON.stringify(connectedUsers)}
+      {JSON.stringify(filteredMessages)}
     </div>
   )
 }

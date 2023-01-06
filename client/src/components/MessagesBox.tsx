@@ -12,7 +12,8 @@ const MessagesBox = ({conversation, isPublic}:MessagesBoxInterface) => {
 
   return (
     <div className="MessagesBox">
-
+        {conversation.map((message, index)=>
+            <div className="message" key={message._id}>{JSON.stringify(message)}</div>)}
     </div>
   )
 }

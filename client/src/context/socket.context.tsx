@@ -24,6 +24,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
   const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
   const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
+
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
       path: '/socket.io',
@@ -58,6 +59,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
           return user
         })
         setConnectedUsers(usersTemp)
+        console.log('received users : ', users, socket.id)
         users.forEach(user=>{
           if(user.socketID===socket.id){
             setIsConnectedAsUser(true)
@@ -87,8 +89,17 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         console.log('socket', socket)
       })
 
-      socket.on('new_message', data=>{
-        console.log('new_message : ',data)
+      socket.on('new_private_message', data=>{
+        console.log('==>data : ', data, username)
+        setUsername(username=>{
+          if(data.from===username){
+            data.fromSelf=true
+          }
+          
+          return username
+        })
+        setPrivateMessages(privateMessages=>[data, ...privateMessages])
+        
       })
 
       return () => {
