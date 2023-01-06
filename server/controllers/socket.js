@@ -20,7 +20,7 @@ const chatGame = (io) => {
       console.log(`send to ${data.socketID}`)
       if(!users.find(usr=>usr.username===data.username)){
         users.push(data)
-        socket.emit('connected_users', users)
+        io.emit('connected_users', users)
         console.log(users)
       }else{
         io.to(data.socketID).emit('user_already_used')
