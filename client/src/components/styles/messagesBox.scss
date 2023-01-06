@@ -1,6 +1,31 @@
-.MessagesBox{
-    max-width:500px;
-    height: 500px;
-    border:1px solid black;
-    margin:0 auto;
+.MessagesBox {
+  max-width: 500px;
+  height: 500px;
+  border: 1px solid black;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  padding: 10px;
+  & > .message {
+    align-self: flex-start;
+    & > .text {
+        background-color: orange;
+      color: white;
+      padding: 10px;
+      border-radius: 1em;
+      max-width: 300px;
+      & > p {
+        margin: 0;
+      }
+      &.self {
+        background-color: green !important;
+        
+      }
+    }
+    &.self {
+        align-self: flex-end;
+      }
+    
+  }
 }
