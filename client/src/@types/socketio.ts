@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io-client'
-import {MessageInterface} from './message'
+import {MessageClientToServerInterface, MessageInterface} from './message'
 
 export interface SocketContextInterface {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>|null
@@ -28,6 +28,7 @@ export interface ClientToServerEvents {
   new_username: (data: ConnectedUsersInterface) => void
   ping: (socketId:string) => void
   disconnect: (data: ConnectedUsersInterface)=>void
+  private_message: (data : MessageClientToServerInterface)=>void
 }
 
 

@@ -5,3 +5,8 @@ export interface MessageInterface {
   from: string
   to: string
 }
+
+export interface MessageClientToServerInterface{
+  to:string
+  message: string
+}

@@ -37,7 +37,7 @@ export const Chat = () => {
           ))}
       </div>
       <MessagesBox conversation={filteredMessages} isPublic={isPublic} />
-      <SendMessage/>
+      <SendMessage selectedChannel={selectedChannel}/>
 
       {JSON.stringify(connectedUsers)}
     </div>

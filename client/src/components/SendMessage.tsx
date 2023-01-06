@@ -1,14 +1,25 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { SocketContext } from '../context/socket.context'
+import { SocketContextInterface } from '../@types/socketio'
 
 import './styles/sendMessage.css'
+import { sendPrivatMessage } from '../utils/messageTools';
 
-const SendMessage = ():JSX.Element => {
+interface SendMessageInterface {
+    selectedChannel: string | null
+}
+
+const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
+    const { socket, connectedUsers, privateMessages, publicMessages } = useContext(SocketContext) as SocketContextInterface
     const [newMessage, setNewMessage] = useState<string>('')
 
-    const handleNewMessage = (e:React.ChangeEvent<HTMLInputElement>):void=>{
-        setNewMessage(e.target.value)
+    const handleNewMessage = ():void=>{
+        if(selectedChannel && socket){
+            sendPrivatMessage(socket, selectedChannel, newMessage)
+            setNewMessage('')
+        }
     }
 
   return (
@@ -20,9 +31,9 @@ const SendMessage = ():JSX.Element => {
           multiline
           rows={1}
           value={newMessage}
-          onChange={handleNewMessage}
+          onChange={e=>setNewMessage(e.target.value)}
         />
-        <Button variant="contained">Send</Button>
+        <Button variant="contained" onClick={handleNewMessage}>Send</Button>
     </div>
   )
 }
