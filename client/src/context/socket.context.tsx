@@ -1,12 +1,9 @@
 import { useState, useEffect, createContext, useContext, PropsWithChildren, useRef, useTransition } from 'react'
-import axios from 'axios'
 import { ConnectedUsersInterface, SocketContextInterface } from '../@types/socketio'
-
 import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
-import { getPingTime, ping } from '../utils/ping'
-import { timeStamp } from 'console'
-import toast, { Toaster } from 'react-hot-toast'
+import { getPingTime } from '../utils/ping'
+import toast from 'react-hot-toast'
 import { MessageInterface } from '../@types/message'
 
 const SocketContext = createContext<SocketContextInterface | null>(null)

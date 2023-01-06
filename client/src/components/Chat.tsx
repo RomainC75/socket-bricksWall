@@ -27,9 +27,9 @@ export const Chat = () => {
   useEffect(()=>{
     setFilteredMessages(privateMessages.filter((user) => user.from === selectedChannel || user.to === selectedChannel))
     console.log('===>',privateMessages)
-  },[privateMessages])
+  },[privateMessages, selectedChannel])
 
-  
+
   useEffect(()=>{
 
   },[publicMessages])
