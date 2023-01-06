@@ -22,6 +22,7 @@ export interface ServerToClientEvents {
   user_already_used: ()=>void
   pong: ()=>void
   credential: (cred: CredentialsInterface)=>void
+  new_message: (data: MessageInterface)=>void
 }
 
 export interface ClientToServerEvents {

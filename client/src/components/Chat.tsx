@@ -11,7 +11,7 @@ export const Chat = () => {
   const { socket, connectedUsers, privateMessages, publicMessages } = useContext(SocketContext) as SocketContextInterface
   const [filteredMessages, setFilteredMessages] = useState<MessageInterface[]>([])
   const [isPublic, setIsPublic] = useState<boolean>(false)
-    const [selectedChannel, setSelectedChannel] = useState<string | null>(null)
+  const [selectedChannel, setSelectedChannel] = useState<string | null>(null)
 
   const handleSelectChannel = (username: string) => {
     setSelectedChannel(username)
@@ -27,17 +27,19 @@ export const Chat = () => {
   return (
     <div className="Chat">
       <div className="tabs">
-        <div className="tab public" onClick={() => handleSelectChannel('public')}>
+        <div className={selectedChannel==='public' ? "tab public selected" : "tab public"} onClick={() => handleSelectChannel('public')}>
           public
         </div>
         {connectedUsers
           .filter((user) => !user.self)
           .map((user, index) => (
-            <div className="tab" key={`${index}-${user.username}`} onClick={() => handleSelectChannel(user.username)}>{user.username}</div>
+            <div className={selectedChannel===user.username ? "tab selected" : "tab"} key={`${index}-${user.username}`} onClick={() => handleSelectChannel(user.username)}>
+              {user.username}
+            </div>
           ))}
       </div>
       <MessagesBox conversation={filteredMessages} isPublic={isPublic} />
-      <SendMessage selectedChannel={selectedChannel}/>
+      <SendMessage selectedChannel={selectedChannel} />
 
       {JSON.stringify(connectedUsers)}
     </div>

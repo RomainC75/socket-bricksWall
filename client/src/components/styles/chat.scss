@@ -2,6 +2,9 @@
     & > .tabs{
         & > .tab{
             cursor: pointer;
+            &.selected{
+                background:linear-gradient(rgb(194, 162, 162), rgb(131, 99, 99));;
+            }
         }
     }
 }

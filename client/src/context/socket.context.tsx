@@ -87,6 +87,10 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         console.log('socket', socket)
       })
 
+      socket.on('new_message', data=>{
+        console.log('new_message : ',data)
+      })
+
       return () => {
         socket.off('connected_users')
         socket.off('user_already_used')

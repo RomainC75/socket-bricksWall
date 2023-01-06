@@ -1,6 +1,6 @@
 export interface MessageInterface {
   message: string
-  fromSelf: boolean
+  fromSelf?: boolean
   date: Date
   from: string
   to: string

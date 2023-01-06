@@ -1,4 +1,9 @@
 .Chat > .tabs > .tab {
   cursor: pointer;
 }
+
+.Chat > .tabs > .tab.selected {
+  background: -webkit-gradient(linear, left top, left bottom, from(#c2a2a2), to(#836363));
+  background: linear-gradient(#c2a2a2, #836363);
+}
 /*# sourceMappingURL=chat.css.map */

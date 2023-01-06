@@ -33,7 +33,7 @@ const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
           value={newMessage}
           onChange={e=>setNewMessage(e.target.value)}
         />
-        <Button variant="contained" onClick={handleNewMessage}>Send</Button>
+        <Button variant="contained" onClick={handleNewMessage} disabled={!selectedChannel}>Send</Button>
     </div>
   )
 }
