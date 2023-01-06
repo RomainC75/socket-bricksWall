@@ -39,6 +39,12 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         setIsConnectedToSocket(true)
       }
     }, 300)
+
+    setInterval(()=>{
+      if (socket.connected) {
+        setIsConnectedToSocket(true)
+      }
+    },3000)
   }, [])
 
 
