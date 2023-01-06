@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
 const {chatGame} = require('../controllers/socket.js')
+require('../db')
 
 
 
@@ -103,4 +104,6 @@ const io = require('socket.io')(server, {
      allowedHeaders: ['content-type']
   },
 })
+
 chatGame(io)
+
