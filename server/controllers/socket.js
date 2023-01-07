@@ -1,7 +1,12 @@
 const Message = require('../models/message.model')
 
+
 let users = []
 let private_messages = []
+//users[]
+// user1 , user2 , Game
+
+let gameRooms = []
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -48,24 +53,30 @@ const chatGame = (io) => {
         }
         private_messages.push(messageToSend)
         const new_message = await Message.create(messageToSend)
-        socket.emit('new_message',new_message)
-        socket.to(users.find(usr=>usr.username===new_message.to).socketID).emit('new_message',new_message)
+        socket.emit('new_private_message',new_message)
+        socket.to(users.find(usr=>usr.username===new_message.to).socketID).emit('new_private_message',new_message)
       } catch (error) {
         socket.emit('error',error)
         console.log("=>Error : ", error)
       }
     })
 
+    // === TECH ===
     socket.on('ping', (socketId) => {
       console.log('=>ping received ')
       io.to(socketId).emit('pong')
     })
 
     socket.on('disconnect', () => {
-      socket.broadcast.emit('user disconnected', socket.id)
+      // socket.broadcast.emit('user disconnected', socket.id)
       users = users.filter((user) => socket.id !== user.socketID)
-      socket.emit('connected_users', users)
+      socket.broadcast.emit('connected_users', users)
       console.log('=>disconnect', users)
+    })
+
+    // === GAME ===
+    socket.on('play_proposal_request',(username)=>{
+      console.log('play_proposal_request',username)
     })
   })
 }
