@@ -75,8 +75,17 @@ const chatGame = (io) => {
     })
 
     // === GAME ===
-    socket.on('play_proposal_request',(username)=>{
-      console.log('play_proposal_request',username)
+    socket.on('play_proposal_request',(proposalRequestMembers)=>{
+      try {
+        const emitterUser = users.find(user=>user.username===proposalRequestMembers.from)
+        if(emitterUser && socket.id === emitterUser.socketID){
+          const targetUser = users.find(user=>user.username===proposalRequestMembers.to)
+          io.to(targetUser.socketID).emit('play_proposal_request',proposalRequestMembers)
+        }
+      } catch (error) {
+        console.log(error)
+        socket.emit('error',error)
+      }
     })
   })
 }
