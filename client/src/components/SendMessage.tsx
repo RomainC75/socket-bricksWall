@@ -6,6 +6,8 @@ import { SocketContextInterface } from '../@types/socketio'
 
 import './styles/sendMessage.css'
 import { sendPrivatMessage } from '../utils/messageTools';
+import PlayProposalButton from './PlayProposalButton';
+import { selectClasses } from '@mui/material';
 
 interface SendMessageInterface {
     selectedChannel: string | null
@@ -34,6 +36,7 @@ const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
           onChange={e=>setNewMessage(e.target.value)}
         />
         <Button variant="contained" onClick={handleNewMessage} disabled={!selectedChannel}>Send</Button>
+        {<PlayProposalButton selectedChannel={selectedChannel}/>}
     </div>
   )
 }

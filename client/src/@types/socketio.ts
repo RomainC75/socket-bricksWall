@@ -12,6 +12,7 @@ export interface SocketContextInterface {
   connectedUsers: ConnectedUsersInterface[]
   privateMessages: MessageInterface[]
   publicMessages: MessageInterface[]
+  username: string | null
 }
 
 export interface ServerToClientEvents {
@@ -30,6 +31,7 @@ export interface ClientToServerEvents {
   ping: (socketId:string) => void
   disconnect: (data: ConnectedUsersInterface)=>void
   private_message: (data : MessageClientToServerInterface)=>void
+  play_proposal_request: (data:{from:string,to:string})=>void
 }
 
 

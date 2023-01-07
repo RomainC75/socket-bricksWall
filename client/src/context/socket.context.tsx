@@ -130,7 +130,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         isConnectedAsUser,
         connectedUsers,
         privateMessages,
-        publicMessages
+        publicMessages,
+        username
       }}
     >
       {props.children}

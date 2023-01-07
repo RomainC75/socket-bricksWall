@@ -22,7 +22,6 @@ const Canvas = ({ width, height }: CanvasProps) => {
 
    return (
       <div className="canvasGame">
-
          <canvas ref={canvasRef} width={width} height={height} />
       </div>
    )
