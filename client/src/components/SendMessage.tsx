@@ -14,7 +14,7 @@ interface SendMessageInterface {
 }
 
 const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
-    const { socket, connectedUsers, privateMessages, publicMessages } = useContext(SocketContext) as SocketContextInterface
+    const { socket, connectedUsers, privateMessages, publicMessages, playProposalRequests } = useContext(SocketContext) as SocketContextInterface
     const [newMessage, setNewMessage] = useState<string>('')
 
     const handleNewMessage = ():void=>{
@@ -37,6 +37,7 @@ const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
         />
         <Button variant="contained" onClick={handleNewMessage} disabled={!selectedChannel}>Send</Button>
         {<PlayProposalButton selectedChannel={selectedChannel}/>}
+        {'proposals'+JSON.stringify(playProposalRequests)}
     </div>
   )
 }

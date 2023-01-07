@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext, useContext, PropsWithChildren, useRef, useTransition } from 'react'
-import { ConnectedUsersInterface, SocketContextInterface } from '../@types/socketio'
+import { ConnectedUsersInterface, ProposalInterface, SocketContextInterface } from '../@types/socketio'
 import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
 import { getPingTime } from '../utils/ping'
@@ -21,6 +21,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
   const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
   const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
+  const [playProposalRequests , setPlayProposalRequests] = useState<ProposalInterface[]>([])
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -104,6 +105,15 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         setPrivateMessages(privateMessages=>[data, ...privateMessages])
         
       })
+      socket.on('play_proposal_request', newProposalRequestMembers=>{
+        setPlayProposalRequests(playProposalRequests=>{
+          console.log('add new proposal ', playProposalRequests, newProposalRequestMembers)
+          if(!playProposalRequests.find(req=>req.from===newProposalRequestMembers.from)){
+            return [newProposalRequestMembers,...playProposalRequests]
+          }
+          return playProposalRequests
+        })
+      })
 
       return () => {
         socket.off('connected_users')
@@ -131,7 +141,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         connectedUsers,
         privateMessages,
         publicMessages,
-        username
+        username,
+        playProposalRequests
       }}
     >
       {props.children}

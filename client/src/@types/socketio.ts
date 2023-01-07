@@ -13,6 +13,7 @@ export interface SocketContextInterface {
   privateMessages: MessageInterface[]
   publicMessages: MessageInterface[]
   username: string | null
+  playProposalRequests: ProposalInterface[]
 }
 
 export interface ServerToClientEvents {
@@ -24,6 +25,7 @@ export interface ServerToClientEvents {
   pong: ()=>void
   credential: (cred: CredentialsInterface)=>void
   new_private_message: (data: MessageInterface)=>void
+  play_proposal_request: (data:ProposalInterface)=>void
 }
 
 export interface ClientToServerEvents {
@@ -31,7 +33,7 @@ export interface ClientToServerEvents {
   ping: (socketId:string) => void
   disconnect: (data: ConnectedUsersInterface)=>void
   private_message: (data : MessageClientToServerInterface)=>void
-  play_proposal_request: (data:{from:string,to:string})=>void
+  play_proposal_request: (data:ProposalInterface)=>void
 }
 
 
@@ -44,4 +46,9 @@ export interface ConnectedUsersInterface{
 export interface CredentialsInterface{
   username: string
   password: string
+}
+
+export interface ProposalInterface{
+  from: string
+  to: string
 }
