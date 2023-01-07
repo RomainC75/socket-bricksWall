@@ -1,12 +1,14 @@
 const Message = require('../models/message.model')
-
+const {findSocketIdWithUsername} = require('../utils/tools')
 
 let users = []
 let private_messages = []
+let proposals = []
 //users[]
 // user1 , user2 , Game
 
-let gameRooms = []
+let games = []
+let intervallId = null
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -80,11 +82,54 @@ const chatGame = (io) => {
         const emitterUser = users.find(user=>user.username===proposalRequestMembers.from)
         if(emitterUser && socket.id === emitterUser.socketID){
           const targetUser = users.find(user=>user.username===proposalRequestMembers.to)
-          io.to(targetUser.socketID).emit('play_proposal_request',proposalRequestMembers)
+          // proposals.push(proposalRequestMembers)
+          const proposalObject = {
+            from: proposalRequestMembers.from,
+            to: proposalRequestMembers.to,
+            isAccepted: false,
+            roomName: proposalRequestMembers.from
+          }
+          proposals.push(proposalObject)
+          socket.join(proposalRequestMembers.from);
+          io.to(targetUser.socketID).emit('play_proposal_request',proposalObject)
         }
       } catch (error) {
         console.log(error)
         socket.emit('error',error)
+      }
+    })
+
+    socket.on('play_proposal_response',(proposalRequestMembers)=>{
+      console.log('play_proposal_response : ', proposalRequestMembers, proposals)
+      const foundProposalIndex = proposals.findIndex(proposal=>proposal.from===proposalRequestMembers.from && proposal.to===proposalRequestMembers.to)
+      const socketOfFROMUser = findSocketIdWithUsername(users,proposalRequestMembers.from).socketID
+      console.log('found proposal : ', proposals[foundProposalIndex])
+      console.log('proposalRequestsMembers : ', proposalRequestMembers)
+      if(proposalRequestMembers.isAccepted && foundProposalIndex>=0 && socketOfFROMUser){
+        const dataToSend = {
+          player1: proposalRequestMembers.from,
+          player2: proposalRequestMembers.to,
+          roomName: proposalRequestMembers.roomName,
+          isAccepted: true
+        }
+        games.push({
+          ...dataToSend,
+          game: 'game'
+        })
+        socket.join(proposalRequestMembers.roomName)
+        proposals.splice(foundProposalIndex,1)
+        io.to(proposalRequestMembers.roomName).emit('play_confirmation', dataToSend)
+        console.log('proposals array : ', proposals)
+        console.log('game array : ', games)
+
+        if(!intervallId){
+          intervallId = setInterval(()=>{
+            games.forEach(gameRoom=>{
+
+            })
+          },30)
+        }
+
       }
     })
   })

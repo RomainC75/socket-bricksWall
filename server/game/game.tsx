@@ -26,8 +26,8 @@ export default class Game {
     this.bar1 = new Bar(this.bar1_X, canvasDimensions, this.barLength, this.barWidth, true)
     this.bar2 = new Bar(this.bar2_X, canvasDimensions, this.barLength, this.barWidth, false)
     this.canvasDimensions = canvasDimensions
-    this.createEventsListeners()
-    this.clockStarted = false
+    // this.createEventsListeners()
+    // this.clockStarted = false
     this.ballRadius = 10
     this.ball = new Ball(
       this.canvasDimensions[0] / 2 + 200,
@@ -41,27 +41,27 @@ export default class Game {
     // this.bricksHandler.oneCentralBrickInitialiser()
   }
 
-  createEventsListeners() {
-    document.addEventListener('keydown', (e) => {
-      console.log(e.keyCode)
-      switch (e.keyCode) {
-        case 38:
-          this.bar1.goUp()
-          break
-        case 40:
-          this.bar1.goDown()
-          break
-        case 32:
-          if (!this.clockStarted) {
-            this.clockStarted = true
-            //==============================
-            this.ball.launch(197)
-            this.startClock()
-          }
-          break
-      }
-    })
-  }
+  // createEventsListeners() {
+  //   document.addEventListener('keydown', (e) => {
+  //     console.log(e.keyCode)
+  //     switch (e.keyCode) {
+  //       case 38:
+  //         this.bar1.goUp()
+  //         break
+  //       case 40:
+  //         this.bar1.goDown()
+  //         break
+  //       case 32:
+  //         if (!this.clockStarted) {
+  //           this.clockStarted = true
+  //           //==============================
+  //           this.ball.launch(197)
+  //           this.startClock()
+  //         }
+  //         break
+  //     }
+  //   })
+  // }
 
 
 
@@ -123,15 +123,15 @@ export default class Game {
     }
   }
 
-  startClock() {
-    this.updateCanvas()
+  clock() {
+    // this.updateCanvas()
     this.handleIfBouncingOnAWall()
     this.handleIfBouncingOnABrick()
 
     this.ball.move()
 
     //set intervall
-    requestAnimationFrame(() => this.startClock())
+    // requestAnimationFrame(() => this.startClock())
 
   }
 }
