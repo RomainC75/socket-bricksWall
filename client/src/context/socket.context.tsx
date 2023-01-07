@@ -22,6 +22,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
   const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
   const [playProposalRequests , setPlayProposalRequests] = useState<ProposalInterface[]>([])
+  
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -115,9 +116,16 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         })
       })
 
+      socket.on('play_confirmation', playConfirmationData=>{
+        console.log('play_confirmation', playConfirmationData)
+      })
+
       return () => {
         socket.off('connected_users')
         socket.off('user_already_used')
+        socket.off('credential')
+        socket.off('new_private_message')
+        socket.off('new_private_message')
         socket.off('pong')
         socket.disconnect()
       }

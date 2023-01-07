@@ -8,6 +8,7 @@ import './styles/sendMessage.css'
 import { sendPrivatMessage } from '../utils/messageTools';
 import PlayProposalButton from './PlayProposalButton';
 import { selectClasses } from '@mui/material';
+import PlayProposalsList from './PlayProposalsList';
 
 interface SendMessageInterface {
     selectedChannel: string | null
@@ -37,6 +38,7 @@ const SendMessage = ({selectedChannel}:SendMessageInterface):JSX.Element => {
         />
         <Button variant="contained" onClick={handleNewMessage} disabled={!selectedChannel}>Send</Button>
         {<PlayProposalButton selectedChannel={selectedChannel}/>}
+        {playProposalRequests.length > 0 && <PlayProposalsList/>}
         {'proposals'+JSON.stringify(playProposalRequests)}
     </div>
   )

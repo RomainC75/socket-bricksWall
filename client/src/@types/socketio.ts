@@ -26,6 +26,8 @@ export interface ServerToClientEvents {
   credential: (cred: CredentialsInterface)=>void
   new_private_message: (data: MessageInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
+  play_proposal_response: (data:ProposalInterface)=>void
+  play_confirmation: (data:PlayConfirmationInterface)=>void
 }
 
 export interface ClientToServerEvents {
@@ -34,6 +36,7 @@ export interface ClientToServerEvents {
   disconnect: (data: ConnectedUsersInterface)=>void
   private_message: (data : MessageClientToServerInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
+  play_proposal_response: (data:ProposalInterface)=>void
 }
 
 
@@ -51,4 +54,11 @@ export interface CredentialsInterface{
 export interface ProposalInterface{
   from: string
   to: string
+  isAccepted?: boolean
+  roomName?: string
+}
+
+export interface PlayConfirmationInterface{
+  player1: string
+  player2: string
 }

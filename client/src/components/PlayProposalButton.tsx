@@ -7,8 +7,9 @@ interface PlayProposalButtonInterface {
   selectedChannel: string | null
 }
 
+// first request from emitter
 const PlayProposalButton = ({ selectedChannel }: PlayProposalButtonInterface): JSX.Element => {
-  const { socket, connectedUsers, username } = useContext(SocketContext) as SocketContextInterface
+  const { socket, connectedUsers, username, playProposalRequests } = useContext(SocketContext) as SocketContextInterface
   const handleProposal = () => {
     socket && username && selectedChannel && socket.emit('play_proposal_request', {
         from:username,
