@@ -9,7 +9,7 @@ import Button from '@mui/material/Button'
 const PlayProposalsList = () => {
     const { socket, playProposalRequests } = useContext(SocketContext) as SocketContextInterface
     
-    const handleAcceptProposal = (req:ProposalInterface) =>{
+    const handleAcceptProposal = (req:ProposalInterface):void =>{
         socket && socket.emit('play_proposal_response',{
             ...req,
             isAccepted:true

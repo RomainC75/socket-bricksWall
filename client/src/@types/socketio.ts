@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client'
 import {PrivateMessageClientToServerInterface, MessageInterface} from './message'
-import { GameInfosServerToClientInterface } from './gameCommon'
+import { GameInfosServerToClientInterface, GameInitialisation } from './gameCommon'
 
 export interface ServerToClientEvents {
   noArg: () => void
@@ -13,7 +13,7 @@ export interface ServerToClientEvents {
   new_private_message: (data: MessageInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
   play_proposal_response: (data:ProposalInterface)=>void
-  play_confirmation: (data:PlayConfirmationInterface)=>void
+  play_confirmation: (data:GameInitialisation)=>void
   error: (data: string)=>void
   next_turn_to_display: (data:GameInfosServerToClientInterface)=>void
 }
@@ -50,4 +50,5 @@ export interface ProposalInterface{
 export interface PlayConfirmationInterface{
   player1: string
   player2: string
+  roomName: string
 }

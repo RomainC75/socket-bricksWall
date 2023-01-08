@@ -7,11 +7,11 @@ import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
 import { getPingTime } from '../utils/ping'
 import toast from 'react-hot-toast'
 import { MessageInterface } from '../@types/message'
+import { GameInitialisation } from '../@types/gameCommon'
 
 const SocketContext = createContext<SocketContextInterface | null>(null)
 
 function SocketProviderWrapper(props: PropsWithChildren<{}>) {
-  
   const navigate = useNavigate()
   const API_URL = process.env.REACT_APP_SOCKET || 'http://localhost:5000'
   const [pingStamp, setPingStamp] = useState<number | null>(null)
@@ -19,13 +19,15 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   const [isConnectedToSocket, setIsConnectedToSocket] = useState<boolean>(false)
   const [isConnectedAsUser, setIsConnectedAsUser] = useState<boolean>(false)
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
-  const [connectedUsers, setConnectedUsers ] = useState<ConnectedUsersInterface[]>([])
+  const [connectedUsers, setConnectedUsers] = useState<ConnectedUsersInterface[]>([])
   const [username, setUsername] = useState<string | null>(null)
-  
+
   const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
   const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
-  const [playProposalRequests , setPlayProposalRequests] = useState<ProposalInterface[]>([])
-  
+  const [playProposalRequests, setPlayProposalRequests] = useState<ProposalInterface[]>([])
+
+  // const [gameDisplayState, setGameDisplayState] = useState<>(null)
+  const [gameInitialisation, setGameInitialisation] = useState<GameInitialisation|null>(null)
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -45,42 +47,40 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       }
     }, 300)
 
-    setInterval(()=>{
+    setInterval(() => {
       if (socket.connected) {
         setIsConnectedToSocket(true)
       }
-    },3000)
+    }, 3000)
   }, [])
-
-
 
   useEffect(() => {
     if (socket) {
       socket.on('connected_users', (users) => {
-        const usersTemp = users.map(user=>{
-          if(socket.id===user.socketID){
+        const usersTemp = users.map((user) => {
+          if (socket.id === user.socketID) {
             return {
               ...user,
-              self:true
+              self: true,
             }
           }
           return user
         })
         setConnectedUsers(usersTemp)
         console.log('received users : ', users, socket.id)
-        users.forEach(user=>{
-          if(user.socketID===socket.id){
+        users.forEach((user) => {
+          if (user.socketID === socket.id) {
             setIsConnectedAsUser(true)
             setUsername(user.username)
           }
         })
       })
-      socket.on('user_already_used',()=>{
+      socket.on('user_already_used', () => {
         console.log('user already used !')
-        toast.error("User already used")
+        toast.error('User already used')
       })
       socket.on('pong', () => {
-        setPingStamp(pingStamp=>{
+        setPingStamp((pingStamp) => {
           if (pingStamp) {
             const value = getPingTime(pingStamp, Date.now())
             setLastCalculatedPing(value)
@@ -88,45 +88,46 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
           return pingStamp
         })
       })
-      socket.on('credential',(credentials)=>{
+      socket.on('credential', (credentials) => {
         console.log('credential ', credentials)
-        socket.auth ={
-          username:credentials.username,
-          password: credentials.password
+        socket.auth = {
+          username: credentials.username,
+          password: credentials.password,
         }
         console.log('socket', socket)
       })
 
-      socket.on('new_private_message', data=>{
+      socket.on('new_private_message', (data) => {
         console.log('==>data : ', data, username)
-        setUsername(username=>{
-          if(data.from===username){
-            data.fromSelf=true
+        setUsername((username) => {
+          if (data.from === username) {
+            data.fromSelf = true
           }
-          
+
           return username
         })
-        setPrivateMessages(privateMessages=>[data, ...privateMessages])
-        
+        setPrivateMessages((privateMessages) => [data, ...privateMessages])
       })
-      socket.on('play_proposal_request', newProposalRequestMembers=>{
-        setPlayProposalRequests(playProposalRequests=>{
+      socket.on('play_proposal_request', (newProposalRequestMembers) => {
+        setPlayProposalRequests((playProposalRequests) => {
           console.log('add new proposal ', playProposalRequests, newProposalRequestMembers)
-          if(!playProposalRequests.find(req=>req.from===newProposalRequestMembers.from)){
-            return [newProposalRequestMembers,...playProposalRequests]
+          if (!playProposalRequests.find((req) => req.from === newProposalRequestMembers.from)) {
+            return [newProposalRequestMembers, ...playProposalRequests]
           }
           return playProposalRequests
         })
       })
 
-      socket.on('play_confirmation', playConfirmationData=>{
+      socket.on('play_confirmation', (gameInitialisationData) => {
         navigate('/game')
 
-        console.log('play_confirmation', playConfirmationData)
+        console.log('play_confirmation', gameInitialisationData)
+        setGameInitialisation(gameInitialisationData)
+        
       })
 
-      socket.on('next_turn_to_display',data=>{
-        console.log('data : ',data)
+      socket.on('next_turn_to_display', (data) => {
+        console.log('data : ', data)
       })
 
       return () => {
@@ -159,7 +160,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         privateMessages,
         publicMessages,
         username,
-        playProposalRequests
+        playProposalRequests,
+        gameInitialisation
       }}
     >
       {props.children}

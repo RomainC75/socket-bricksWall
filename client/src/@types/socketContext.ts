@@ -1,6 +1,7 @@
 import { Socket } from "socket.io-client"
 import { ServerToClientEvents, ClientToServerEvents, ConnectedUsersInterface, ProposalInterface } from "./socketio"
 import { MessageInterface } from "./message"
+import { GameInitialisation } from "./gameCommon"
 
 export interface SocketContextInterface {
     socket: Socket<ServerToClientEvents, ClientToServerEvents>|null
@@ -15,4 +16,5 @@ export interface SocketContextInterface {
     publicMessages: MessageInterface[]
     username: string | null
     playProposalRequests: ProposalInterface[]
+    gameInitialisation: GameInitialisation|null
   }

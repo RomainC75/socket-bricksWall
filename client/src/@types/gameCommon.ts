@@ -1,3 +1,22 @@
+export interface GameInitialisation {
+  player1: string
+  player2: string
+  roomName: string
+  isAccepted: boolean
+  isWaiting: boolean
+  dimensions: [number, number]
+  bricks: BrickPosition[]
+  ball: {
+    x: number
+    y: number
+    radius: number
+  }
+  barDim: RectangleDimensions
+  brickDim: RectangleDimensions
+  player1Bar: PlayerBarInitialisationInterface
+  player2Bar: PlayerBarInitialisationInterface
+}
+
 export interface GameInfosServerToClientInterface {
   bar1Y: number
   bar2Y: number
@@ -5,7 +24,18 @@ export interface GameInfosServerToClientInterface {
   bricks: BrickPosition[]
 }
 
-interface BrickPosition {
+export interface BrickPosition {
+  x: number
+  y: number
+  color: string
+}
+
+export interface RectangleDimensions {
+  width: number
+  height: number
+}
+
+export interface PlayerBarInitialisationInterface {
   x: number
   y: number
 }
