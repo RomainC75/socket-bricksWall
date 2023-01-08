@@ -6,6 +6,7 @@ var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
 var chatGame = require('../controllers/socket').chatGame;
+const socketIo = require('socket.io')
 require('../db');
 /**
  * Get port from environment and store in Express.
@@ -72,7 +73,7 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
-var io = require('socket.io')(server, {
+var io = socketIo(server, {
     //same path as the client
     path: '/socket.io',
     cors: {

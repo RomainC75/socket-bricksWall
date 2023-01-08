@@ -1,21 +1,31 @@
+import { Socket } from "socket.io"
+import { ConnectedUsersInterface, ServerToClientEvents, ClientToServerEvents, ProposalInterface } from "../@types/socket"
+import { PlayingGameInterface } from "../@types/game"
+import Game from "../game/game"
+
 const Message = require('../models/message.model')
 const {findSocketIdWithUsername} = require('../utils/tools')
 
-let users = []
+const GAME_BOARD_WIDTH = 600
+const GAME_BOARD_HEIGHT = 300
+
+let users: ConnectedUsersInterface[] = []
 let private_messages = []
-let proposals = []
+let proposals: ProposalInterface[] = []
 //users[]
 // user1 , user2 , Game
 
-let games = []
+let games: PlayingGameInterface[] = []
 let intervallId: NodeJS.Timer | null = null
 
 const chatGame = (io) => {
   // console.log(io.opts)
   console.log('=> socket on ')
-  io.use((socket, next) => {
+  
+  io.use((socket:Socket<ServerToClientEvents, ClientToServerEvents>, next) => {
     // get the "username" sent with socket.auth from the front
     console.log('middleware')
+    
     const username = socket.handshake.auth.username
     console.log('xxx', socket.handshake.auth)
     // if (!username) {
@@ -26,10 +36,9 @@ const chatGame = (io) => {
     next()
   })
 
-  io.on('connection', (socket) => {
+  io.on('connection', (socket:Socket<ClientToServerEvents, ServerToClientEvents>) => {
     // console.log('socket io ', socket.id)
-    socket.on('new_username', (data) => {
-      console.log(`send to ${data.socketID}`)
+    socket.on('new_username', (data: ConnectedUsersInterface) => {
       if (!users.find((usr) => usr.username === data.username)) {
         users.push(data)
         //sends credentials
@@ -38,8 +47,6 @@ const chatGame = (io) => {
           password: Date.now().toString(),
         })
         io.emit('connected_users', users)
-
-        console.log(users)
       } else {
         io.to(data.socketID).emit('user_already_used')
       }
@@ -58,7 +65,7 @@ const chatGame = (io) => {
         socket.emit('new_private_message',new_message)
         socket.to(users.find(usr=>usr.username===new_message.to).socketID).emit('new_private_message',new_message)
       } catch (error) {
-        socket.emit('error',error)
+        socket.emit('error',JSON.stringify(error))
         console.log("=>Error : ", error)
       }
     })
@@ -95,7 +102,7 @@ const chatGame = (io) => {
         }
       } catch (error) {
         console.log(error)
-        socket.emit('error',error)
+        socket.emit('error',JSON.stringify(error))
       }
     })
 
@@ -110,23 +117,32 @@ const chatGame = (io) => {
           player1: proposalRequestMembers.from,
           player2: proposalRequestMembers.to,
           roomName: proposalRequestMembers.roomName,
-          isAccepted: true
+          isAccepted: true,
+          dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT]
         }
+        
         games.push({
           ...dataToSend,
-          game: 'game objecst',
+          game: new Game([GAME_BOARD_WIDTH,GAME_BOARD_HEIGHT]),
+          isWaitingToBegin: true,
+          waitingTime: 0,
           io: io
         })
+
         socket.join(proposalRequestMembers.roomName)
         proposals.splice(foundProposalIndex,1)
         io.to(proposalRequestMembers.roomName).emit('play_confirmation', dataToSend)
-        console.log('proposals array : ', proposals)
-        console.log('game array : ', games)
 
         if(!intervallId){
           intervallId = setInterval(()=>{
             games.forEach(gameRoom=>{
-
+              if(gameRoom.isWaitingToBegin){
+                gameRoom.waitingTime+=30
+              }else{
+                const infosToSend = gameRoom.game.clock()
+                io.to(gameRoom.roomName).emit('next_turn_to_display',infosToSend)
+              }
+              
             })
           },30)
         }

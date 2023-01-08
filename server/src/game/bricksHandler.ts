@@ -51,6 +51,15 @@ export default class BricksHandler {
     return this.bricks
   }
 
+  getBricksPositions(){
+    return this.bricks.map(brick=>{
+      return{
+        x:brick.getX(),
+        y:brick.getY()
+      }
+    })
+  }
+
   
 
   removeBrickAt(index:number):void{

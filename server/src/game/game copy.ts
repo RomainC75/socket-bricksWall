@@ -16,10 +16,6 @@ export default class Game {
   bar2_X: number
   isPlayer1Turn: boolean
   bricksHandler: BricksHandler
-  nextMove: {
-    player1: string | null
-    player2: string | null
-  }
   //P1/left:true
 
   constructor(canvasDimensions: [number, number]) {
@@ -43,12 +39,38 @@ export default class Game {
     this.bricksHandler = new BricksHandler(canvasDimensions)
     this.bricksHandler.bricksInitialiser()
     // this.bricksHandler.oneCentralBrickInitialiser()
-    this.nextMove = {
-      player1: null,
-      player2: null
-    }
   }
 
+  // createEventsListeners() {
+  //   document.addEventListener('keydown', (e) => {
+  //     console.log(e.keyCode)
+  //     switch (e.keyCode) {
+  //       case 38:
+  //         this.bar1.goUp()
+  //         break
+  //       case 40:
+  //         this.bar1.goDown()
+  //         break
+  //       case 32:
+  //         if (!this.clockStarted) {
+  //           this.clockStarted = true
+  //           //==============================
+  //           this.ball.launch(197)
+  //           this.startClock()
+  //         }
+  //         break
+  //     }
+  //   })
+  // }
+
+
+
+
+
+
+  // updateCanvas() {
+  //   this.ctx.clearRect(0, 0, this.canvasDimensions[0], this.canvasDimensions[1])
+  // }
 
   isInFrontOfBar(bar: Bar): boolean {
     if (this.ball.getY() > bar.getY() - this.barLength / 2 && this.ball.getY() < bar.getY() + this.barLength / 2) {
@@ -101,13 +123,6 @@ export default class Game {
     }
   }
 
-  handlePlayer1NextMove(command:string){
-    this.nextMove.player1=command
-  }
-  handlePlayer2NextMove(command:string){
-    this.nextMove.player2=command
-  }
-
   clock() {
     // this.updateCanvas()
     this.handleIfBouncingOnAWall()
@@ -115,15 +130,8 @@ export default class Game {
 
     this.ball.move()
 
-    const bar1Y = this.bar1.getY()
-    this.bar1=null
-    const bar2Y = this.bar2.getY()
-    this.bar2=null
-    return {
-      bar1Y:bar1Y,
-      bar2Y:bar2Y,
-      ball:[this.ball.getX(), this.ball.getY()],
-      bricks: this.bricksHandler.getBricksPositions()
-    }
+    //set intervall
+    // requestAnimationFrame(() => this.startClock())
+
   }
 }
