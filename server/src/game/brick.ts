@@ -17,6 +17,7 @@ export default class Brick {
     return this.x
   }
   getY(){
+    
     return this.y
   }
   

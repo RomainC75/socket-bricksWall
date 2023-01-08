@@ -10,6 +10,6 @@ ADD . /src
 
 # RUN npm run build 
 
-CMD npm start
+CMD npm run dev
 
 # docker run -p 5000:5000 -v ${PWD}:/src socketbrick

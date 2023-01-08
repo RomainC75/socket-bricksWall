@@ -8,7 +8,7 @@ let proposals = []
 // user1 , user2 , Game
 
 let games = []
-let intervallId = null
+let intervallId: NodeJS.Timer | null = null
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -114,7 +114,8 @@ const chatGame = (io) => {
         }
         games.push({
           ...dataToSend,
-          game: 'game'
+          game: 'game objecst',
+          io: io
         })
         socket.join(proposalRequestMembers.roomName)
         proposals.splice(foundProposalIndex,1)

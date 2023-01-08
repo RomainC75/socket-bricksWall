@@ -4,11 +4,12 @@
  * Module dependencies.
 */
 
-var app = require('../app');
+var app = require('./src/app');
+
 var debug = require('debug')('server:server');
 var http = require('http');
-const {chatGame} = require('../controllers/socket.js')
-require('../db')
+const {chatGame} = require('./src/controllers/socket.js')
+require('./src/db')
 
 
 
