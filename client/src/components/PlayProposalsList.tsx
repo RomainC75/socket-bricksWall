@@ -1,6 +1,8 @@
 import React, {useContext} from 'react'
 import { SocketContext } from '../context/socket.context'
-import { ProposalInterface, SocketContextInterface } from '../@types/socketio'
+import { ProposalInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
+
 import Button from '@mui/material/Button'
 
 // to Accept the proposal

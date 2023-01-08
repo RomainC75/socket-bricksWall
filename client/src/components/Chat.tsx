@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { SocketContext } from '../context/socket.context'
-import { SocketContextInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
 import MessagesBox from './MessagesBox'
 import { MessageInterface } from '../@types/message'
 import SendMessage from './SendMessage'

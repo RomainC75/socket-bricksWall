@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { ServerToClientEvents, ClientToServerEvents, SocketContextInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
 import { SocketContext } from '../context/socket.context'
-import Discussion from '../components/Discussion'
 import Connection from '../components/Connection'
 import { GetPing } from '../components/GetPing'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import { Chat } from '../components/Chat'
 
 export const Homepage = () => {

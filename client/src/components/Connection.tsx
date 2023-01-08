@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { SocketContext } from '../context/socket.context'
-import { SocketContextInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
 
 
 

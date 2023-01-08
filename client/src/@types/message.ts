@@ -7,7 +7,7 @@ export interface MessageInterface {
   createdAt: string
 }
 
-export interface MessageClientToServerInterface{
+export interface PrivateMessageClientToServerInterface{
   to:string
   message: string
 }

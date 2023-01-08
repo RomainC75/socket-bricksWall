@@ -2,7 +2,7 @@ import React, {useState, useContext} from 'react'
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { SocketContext } from '../context/socket.context'
-import { SocketContextInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
 
 import './styles/sendMessage.css'
 import { sendPrivatMessage } from '../utils/messageTools';

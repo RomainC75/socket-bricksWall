@@ -1,5 +1,7 @@
 import { useState, useEffect, createContext, useContext, PropsWithChildren, useRef, useTransition } from 'react'
-import { ConnectedUsersInterface, ProposalInterface, SocketContextInterface } from '../@types/socketio'
+import { useNavigate } from 'react-router-dom'
+import { ConnectedUsersInterface, ProposalInterface } from '../@types/socketio'
+import { SocketContextInterface } from '../@types/socketContext'
 import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
 import { getPingTime } from '../utils/ping'
@@ -10,6 +12,7 @@ const SocketContext = createContext<SocketContextInterface | null>(null)
 
 function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   
+  const navigate = useNavigate()
   const API_URL = process.env.REACT_APP_SOCKET || 'http://localhost:5000'
   const [pingStamp, setPingStamp] = useState<number | null>(null)
   const [lastCalculatedPing, setLastCalculatedPing] = useState<number | null>(null)
@@ -18,7 +21,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
   const [connectedUsers, setConnectedUsers ] = useState<ConnectedUsersInterface[]>([])
   const [username, setUsername] = useState<string | null>(null)
-
+  
   const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
   const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
   const [playProposalRequests , setPlayProposalRequests] = useState<ProposalInterface[]>([])
@@ -117,7 +120,13 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       })
 
       socket.on('play_confirmation', playConfirmationData=>{
+        navigate('/game')
+
         console.log('play_confirmation', playConfirmationData)
+      })
+
+      socket.on('next_turn_to_display',data=>{
+        console.log('data : ',data)
       })
 
       return () => {

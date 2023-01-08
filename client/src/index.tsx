@@ -11,11 +11,11 @@ root.render(
   <div>
     {/* <React.StrictMode> */}
     {/* <Provider store={AppReduxStore}> */}
-    <SocketProviderWrapper>
-      <BrowserRouter>
+    <BrowserRouter>
+      <SocketProviderWrapper>
         <App />
-      </BrowserRouter>
-    </SocketProviderWrapper>
+      </SocketProviderWrapper>
+    </BrowserRouter>
     {/* </Provider> */}
     {/* </React.StrictMode> */}
   </div>
