@@ -55,7 +55,8 @@ export default class BricksHandler {
     return this.bricks.map(brick=>{
       return{
         x:brick.getX(),
-        y:brick.getY()
+        y:brick.getY(),
+        color: brick.color
       }
     })
   }

@@ -14,7 +14,6 @@ export default class Game {
   ballRadius: number
   bar1_X: number
   bar2_X: number
-  isPlayer1Turn: boolean
   bricksHandler: BricksHandler
   nextMove: {
     player1: string | null
@@ -39,7 +38,6 @@ export default class Game {
       this.canvasDimensions,
       this.ballRadius
     )
-    this.isPlayer1Turn = false
     this.bricksHandler = new BricksHandler(canvasDimensions)
     this.bricksHandler.bricksInitialiser()
     // this.bricksHandler.oneCentralBrickInitialiser()
@@ -91,13 +89,11 @@ export default class Game {
   handleIfBouncingOnAWall() {
     if (this.ball.getX() < this.bar1_X + this.ballRadius && this.isInFrontOfBar(this.bar1)) {
       this.ball.bouncesOnPaddle(this.ball.getY() - this.bar1.getY())
-      this.isPlayer1Turn = !this.isPlayer1Turn
       //   && this.isInFrontOfBar(this.bar2)
     } else if (this.ball.getX() >= this.bar2_X - this.ballRadius) {
       console.log('yea')
       //   this.ball.getY()-this.bar2.getY()
       this.ball.bouncesOnPaddle(0)
-      this.isPlayer1Turn = !this.isPlayer1Turn
     }
   }
 

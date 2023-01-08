@@ -1,7 +1,8 @@
 import { Socket } from "socket.io"
-import { ConnectedUsersInterface, ServerToClientEvents, ClientToServerEvents, ProposalInterface } from "../@types/socket"
+import { ConnectedUsersInterface, ServerToClientEvents, ClientToServerEvents, ProposalInterface, PlayConfirmationInterface } from "../@types/socket"
 import { PlayingGameInterface } from "../@types/game"
 import Game from "../game/game"
+import { GameInitialisation } from "../@types/gameCommon"
 
 const Message = require('../models/message.model')
 const {findSocketIdWithUsername} = require('../utils/tools')
@@ -86,11 +87,11 @@ const chatGame = (io) => {
     // === GAME ===
     socket.on('play_proposal_request',(proposalRequestMembers)=>{
       try {
-        const emitterUser = users.find(user=>user.username===proposalRequestMembers.from)
+        const emitterUser:ConnectedUsersInterface|undefined = users.find(user=>user.username===proposalRequestMembers.from)
         if(emitterUser && socket.id === emitterUser.socketID){
-          const targetUser = users.find(user=>user.username===proposalRequestMembers.to)
+          const targetUser:ConnectedUsersInterface|undefined = users.find(user=>user.username===proposalRequestMembers.to)
           // proposals.push(proposalRequestMembers)
-          const proposalObject = {
+          const proposalObject:ProposalInterface = {
             from: proposalRequestMembers.from,
             to: proposalRequestMembers.to,
             isAccepted: false,
@@ -113,17 +114,40 @@ const chatGame = (io) => {
       console.log('found proposal : ', proposals[foundProposalIndex])
       console.log('proposalRequestsMembers : ', proposalRequestMembers)
       if(proposalRequestMembers.isAccepted && foundProposalIndex>=0 && socketOfFROMUser){
-        const dataToSend = {
+        const game = new Game([GAME_BOARD_WIDTH,GAME_BOARD_HEIGHT])
+        const dataToSend: GameInitialisation = {
           player1: proposalRequestMembers.from,
           player2: proposalRequestMembers.to,
           roomName: proposalRequestMembers.roomName,
           isAccepted: true,
-          dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT]
+          isWaiting: true,
+          dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT],
+          bricks: game.bricksHandler.getBricksPositions(),
+          ball: {
+            x:game.ball.getX(),
+            y:game.ball.getX(),
+            radius: game.ball.radius
+          },
+          barDim:{
+            height:game.barLength,
+            width:game.barWidth
+          },
+          brickDim:{
+            width:game.bricksHandler.brickWidth,
+            height:game.bricksHandler.brickHeight
+          },
+          player1Bar: {
+            x:game.bar1.x,
+            y:game.bar1.y,
+          },
+          player2Bar:{
+            x:game.bar1.x,
+            y:game.bar1.y,
+          },
         }
-        
         games.push({
           ...dataToSend,
-          game: new Game([GAME_BOARD_WIDTH,GAME_BOARD_HEIGHT]),
+          game: game,
           isWaitingToBegin: true,
           waitingTime: 0,
           io: io
@@ -146,7 +170,6 @@ const chatGame = (io) => {
             })
           },30)
         }
-
       }
     })
   })

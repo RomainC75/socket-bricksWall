@@ -1,21 +1,7 @@
-import { Socket } from 'socket.io'
-import { GameInfosServerToClientInterface } from './game'
+import { Socket } from 'socket.io' 
+import { BrickPosition, PlayerBarInitialisationInterface, GameInfosServerToClientInterface } from './gameCommon'
 import {PrivateMessageClientToServerInterface, MessageInterface} from './message'
 
-export interface SocketContextInterface {
-  socket: Socket<ServerToClientEvents, ClientToServerEvents>|null
-  pingStamp: number | null
-  setPingStamp: (timeStamp: number)=>void
-  lastCalculatedPing: number | null
-  setLastCalculatedPing: (timestamp: number|null)=>void
-  isConnectedToSocket: boolean
-  isConnectedAsUser: boolean
-  connectedUsers: ConnectedUsersInterface[]
-  privateMessages: MessageInterface[]
-  publicMessages: MessageInterface[]
-  username: string | null
-  playProposalRequests: ProposalInterface[]
-}
 
 export interface ServerToClientEvents {
   noArg: () => void
@@ -62,6 +48,8 @@ export interface ProposalInterface{
 }
 
 export interface PlayConfirmationInterface{
-  player1: string
-  player2: string
-}
+    player1: string
+    player2: string
+    roomName: string
+  }
+
