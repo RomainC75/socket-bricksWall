@@ -8,6 +8,7 @@ import { getPingTime } from '../utils/ping'
 import toast from 'react-hot-toast'
 import { MessageInterface } from '../@types/message'
 import { GameInfosServerToClientInterface, GameInitialisation } from '../@types/gameCommon'
+import GameDisplay from '../utils/game/gameDisplay'
 
 const SocketContext = createContext<SocketContextInterface | null>(null)
 
@@ -29,6 +30,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   // const [gameDisplayState, setGameDisplayState] = useState<>(null)
   const [gameInitialisation, setGameInitialisation] = useState<GameInitialisation|null>(null)
   const [newGameInfosToDisplay, setNewGameInfosToDisplay] = useState<GameInfosServerToClientInterface|null>(null)
+  const gameDisplay = useRef<GameDisplay|null>(null)
+  const [displayGameBool, setDisplayGameBool] = useState<boolean>(false)
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -121,7 +124,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       })
 
       socket.on('play_confirmation', (gameInitialisationData) => {
-        navigate('/game')
+        // navigate('/game')
+        setDisplayGameBool(true)
 
         console.log('play_confirmation', gameInitialisationData)
         setGameInitialisation(gameInitialisationData)
@@ -135,6 +139,12 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
       socket.on('waitingClock',data=>{
         console.log('waiting clock', data)
+      })
+
+      socket.on('stop_game_response',()=>{
+        console.log('stop_game_response !')
+        gameDisplay.current=null
+        setDisplayGameBool(false)
       })
 
       return () => {
@@ -169,7 +179,9 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         username,
         playProposalRequests,
         gameInitialisation,
-        newGameInfosToDisplay
+        newGameInfosToDisplay,
+        gameDisplay,
+        displayGameBool
       }}
     >
       {props.children}

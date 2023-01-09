@@ -17,6 +17,7 @@ export interface ServerToClientEvents {
   error: (data: string)=>void
   next_turn_to_display: (data:GameInfosServerToClientInterface)=>void
   waitingClock: (data:number)=>void
+  stop_game_response: ()=>void
 }
 
 export interface ClientToServerEvents {
@@ -26,6 +27,7 @@ export interface ClientToServerEvents {
   private_message: (data : PrivateMessageClientToServerInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
   play_proposal_response: (data:ProposalInterface)=>void
+  stop_game_request: ()=>void
 }
 
 
