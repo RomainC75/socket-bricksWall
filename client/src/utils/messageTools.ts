@@ -6,3 +6,9 @@ export const sendPrivatMessage = (socket:Socket,username:string, message:string 
         message
     })
 }
+
+export const sendPublicMessage = (socket:Socket, message:string ) =>{
+    socket.emit('public_message',{
+        message
+    })
+}

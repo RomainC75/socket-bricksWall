@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents, ConnectedUsersInterface, ProposalInterface } from './socketio'
-import { MessageInterface } from './message'
+import { PrivateMessageInterface, PublicMessageClientToServerInterface, PublicMessageInterface } from './message'
 import { GameInfosServerToClientInterface, GameInitialisation } from './gameCommon'
 import GameDisplay from '../utils/game/gameDisplay'
 
@@ -13,8 +13,8 @@ export interface SocketContextInterface {
   isConnectedToSocket: boolean
   isConnectedAsUser: boolean
   connectedUsers: ConnectedUsersInterface[]
-  privateMessages: MessageInterface[]
-  publicMessages: MessageInterface[]
+  privateMessages: PrivateMessageInterface[]
+  publicMessages: PublicMessageInterface[]
   username: string | null
   playProposalRequests: ProposalInterface[]
   gameInitialisation: GameInitialisation | null

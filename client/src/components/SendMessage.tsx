@@ -5,7 +5,7 @@ import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketContext'
 
 import './styles/sendMessage.css'
-import { sendPrivatMessage } from '../utils/messageTools'
+import { sendPrivatMessage, sendPublicMessage } from '../utils/messageTools'
 import PlayProposalButton from './PlayProposalButton'
 import { selectClasses } from '@mui/material'
 import PlayProposalsList from './PlayProposalsList'
@@ -21,8 +21,11 @@ const SendMessage = ({ selectedChannel }: SendMessageInterface): JSX.Element => 
   const [newMessage, setNewMessage] = useState<string>('')
 
   const handleNewMessage = (): void => {
-    if (selectedChannel && socket) {
+    if (selectedChannel && selectedChannel!=='public' && socket) {
       sendPrivatMessage(socket, selectedChannel, newMessage)
+      setNewMessage('')
+    }else if(selectedChannel==='public' &&socket){
+      sendPublicMessage(socket, newMessage)
       setNewMessage('')
     }
   }

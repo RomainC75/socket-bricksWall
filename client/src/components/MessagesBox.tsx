@@ -1,9 +1,9 @@
-import { MessageInterface } from '../@types/message'
+import { PrivateMessageInterface, PublicMessageInterface } from '../@types/message'
 
 import './styles/messagesBox.css'
 
 interface MessagesBoxInterface {
-  conversation: MessageInterface[]
+  conversation: (PublicMessageInterface | PrivateMessageInterface)[]
   isPublic?: boolean
 }
 

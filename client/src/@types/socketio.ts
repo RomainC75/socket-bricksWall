@@ -1,4 +1,4 @@
-import {PrivateMessageClientToServerInterface, MessageInterface} from './message'
+import {PrivateMessageClientToServerInterface, PublicMessageClientToServerInterface, PublicMessageInterface, PrivateMessageInterface} from './message'
 import { GameInfosServerToClientInterface, GameInitialisation } from './gameCommon'
 
 export interface ServerToClientEvents {
@@ -9,7 +9,8 @@ export interface ServerToClientEvents {
   user_already_used: ()=>void
   pong: ()=>void
   credential: (cred: CredentialsInterface)=>void
-  new_private_message: (data: MessageInterface)=>void
+  new_public_message: (data: PublicMessageInterface)=>void
+  new_private_message: (data: PrivateMessageInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
   play_proposal_response: (data:ProposalInterface)=>void
   play_confirmation: (data:GameInitialisation)=>void
@@ -23,14 +24,13 @@ export interface ClientToServerEvents {
   new_username: (data: ConnectedUsersInterface) => void
   ping: (socketId:string) => void
   disconnect: (data: ConnectedUsersInterface)=>void
+  public_message: (data : PublicMessageClientToServerInterface)=>void
   private_message: (data : PrivateMessageClientToServerInterface)=>void
   play_proposal_request: (data:ProposalInterface)=>void
   play_proposal_response: (data:ProposalInterface)=>void
   stop_game_request: ()=>void
   new_move: (data:{username:string,key:string})=>void
 }
-
-
 
 export interface ConnectedUsersInterface{
   username: string

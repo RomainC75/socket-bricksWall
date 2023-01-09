@@ -2,14 +2,14 @@ import React, { useState, useContext, useEffect } from 'react'
 import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketContext'
 import MessagesBox from './MessagesBox'
-import { MessageInterface } from '../@types/message'
+import { PublicMessageInterface, PrivateMessageInterface } from '../@types/message'
 import SendMessage from './SendMessage'
 
 import './styles/chat.css'
 
 export const Chat = () => {
   const { socket, connectedUsers, privateMessages, publicMessages } = useContext(SocketContext) as SocketContextInterface
-  const [filteredMessages, setFilteredMessages] = useState<MessageInterface[]>([])
+  const [filteredMessages, setFilteredMessages] = useState<(PublicMessageInterface|PrivateMessageInterface)[]>([])
   const [isPublic, setIsPublic] = useState<boolean>(false)
   const [selectedChannel, setSelectedChannel] = useState<string | null>(null)
 

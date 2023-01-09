@@ -6,7 +6,7 @@ import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
 import { getPingTime } from '../utils/ping'
 import toast from 'react-hot-toast'
-import { MessageInterface } from '../@types/message'
+import { PrivateMessageInterface, PublicMessageClientToServerInterface, PublicMessageInterface } from '../@types/message'
 import { GameInfosServerToClientInterface, GameInitialisation } from '../@types/gameCommon'
 import GameDisplay from '../utils/game/gameDisplay'
 
@@ -23,8 +23,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   const [connectedUsers, setConnectedUsers] = useState<ConnectedUsersInterface[]>([])
   const [username, setUsername] = useState<string | null>(null)
 
-  const [publicMessages, setPublicMessages] = useState<MessageInterface[]>([])
-  const [privateMessages, setPrivateMessages] = useState<MessageInterface[]>([])
+  const [publicMessages, setPublicMessages] = useState<PublicMessageInterface[]>([])
+  const [privateMessages, setPrivateMessages] = useState<PrivateMessageInterface[]>([])
   const [playProposalRequests, setPlayProposalRequests] = useState<ProposalInterface[]>([])
 
   // const [gameDisplayState, setGameDisplayState] = useState<>(null)
@@ -101,6 +101,11 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
           password: credentials.password,
         }
         console.log('socket', socket)
+      })
+
+      socket.on('new_public_message',data=>{
+        console.log('new_public_message : ',data)
+        setPublicMessages((publicMessages)=>[data,...publicMessages])
       })
 
       socket.on('new_private_message', (data) => {

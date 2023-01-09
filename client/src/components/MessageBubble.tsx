@@ -1,9 +1,9 @@
 import React from 'react'
-import { MessageInterface } from '../@types/message'
+import { PublicMessageInterface, PrivateMessageInterface } from '../@types/message'
 
 
 
-export const MessageBubble = ({message}: MessageInterface) => {
+export const MessageBubble = ({message}: PublicMessageInterface|PrivateMessageInterface) => {
 
 
   return (
