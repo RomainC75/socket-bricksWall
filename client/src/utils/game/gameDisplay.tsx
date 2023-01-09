@@ -82,9 +82,9 @@ export default class GameDisplay {
 
   drawBars() {
     this.ctx.fillStyle = 'blue'
-    this.ctx.fillRect(this.bar1.x, this.bar1.y, this.barWidth, this.barLength)
+    this.ctx.fillRect(this.bar1.x-this.barWidth/2, this.bar1.y-this.barLength/2, this.barWidth, this.barLength)
     this.ctx.fillStyle = 'blue'
-    this.ctx.fillRect(this.bar2.x, this.bar2.y, this.barWidth, this.barLength)
+    this.ctx.fillRect(this.bar2.x-this.barWidth/2, this.bar2.y-this.barLength/2, this.barWidth, this.barLength)
   }
 
   drawBrick(brick: BrickPosition, brickDim: RectangleDimensions) {
