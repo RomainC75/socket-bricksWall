@@ -181,7 +181,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         gameInitialisation,
         newGameInfosToDisplay,
         gameDisplay,
-        displayGameBool
+        displayGameBool,
+        setDisplayGameBool
       }}
     >
       {props.children}

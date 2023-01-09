@@ -21,4 +21,5 @@ export interface SocketContextInterface {
   newGameInfosToDisplay: GameInfosServerToClientInterface | null
   gameDisplay: React.MutableRefObject<GameDisplay|null>
   displayGameBool: boolean
+  setDisplayGameBool:(displayGameBool: boolean) => void
 }

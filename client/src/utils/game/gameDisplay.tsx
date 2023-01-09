@@ -55,22 +55,22 @@ export default class GameDisplay {
     this.firstDraw()
   }
 
-  attachEvents() {
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
-      console.log(e.keyCode)
-      switch (e.keyCode) {
-        case 38:
-          console.log('up')
-          break
-        case 40:
-          console.log('down')
-          break
-        case 32:
-          console.log('space')
-          break
-      }
-    })
-  }
+  // attachEvents() {
+  //   document.addEventListener('keydown', (e: KeyboardEvent) => {
+  //     console.log(e.keyCode)
+  //     switch (e.keyCode) {
+  //       case 38:
+  //         console.log('up')
+  //         break
+  //       case 40:
+  //         console.log('down')
+  //         break
+  //       case 32:
+  //         console.log('space')
+  //         break
+  //     }
+  //   })
+  // }
 
   drawBall() {
     this.ctx.beginPath()

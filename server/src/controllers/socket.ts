@@ -1,15 +1,21 @@
-import { Socket } from "socket.io"
-import { ConnectedUsersInterface, ServerToClientEvents, ClientToServerEvents, ProposalInterface, PlayConfirmationInterface } from "../@types/socket"
-import { PlayingGameInterface } from "../@types/game"
-import Game from "../game/game"
-import { GameInitialisation } from "../@types/gameCommon"
+import { Socket } from 'socket.io'
+import {
+  ConnectedUsersInterface,
+  ServerToClientEvents,
+  ClientToServerEvents,
+  ProposalInterface,
+  PlayConfirmationInterface,
+} from '../@types/socket'
+import { PlayingGameInterface } from '../@types/game'
+import Game from '../game/game'
+import { GameInitialisation } from '../@types/gameCommon'
 
 const Message = require('../models/message.model')
-const {findSocketIdWithUsername} = require('../utils/tools')
-const {findUsernameWithSocketId}  = require('../utils/tools')
+const { findSocketIdWithUsername, findUsernameWithSocketId, findRunningGameWithAUserName } = require('../utils/tools')
 
 const GAME_BOARD_WIDTH = 600
 const GAME_BOARD_HEIGHT = 300
+const INTERVAL_DELAY = 20
 
 let users: ConnectedUsersInterface[] = []
 let private_messages = []
@@ -19,16 +25,21 @@ let proposals: ProposalInterface[] = []
 
 let games: PlayingGameInterface[] = []
 let intervallId: NodeJS.Timer | null = null
-const waitingCounts: number[] = [1020, 2010, 3000, 4020, 5010]
+const waitingCounts: number[] = [
+  1000+1000%INTERVAL_DELAY, 
+  2000+2000%INTERVAL_DELAY, 
+  3000+3000%INTERVAL_DELAY, 
+  4000+4000%INTERVAL_DELAY, 
+  5000+5000%INTERVAL_DELAY]
 
 const chatGame = (io) => {
   // console.log(io.opts)
   console.log('=> socket on ')
-  
-  io.use((socket:Socket<ServerToClientEvents, ClientToServerEvents>, next) => {
+
+  io.use((socket: Socket<ServerToClientEvents, ClientToServerEvents>, next) => {
     // get the "username" sent with socket.auth from the front
     console.log('middleware')
-    
+
     const username = socket.handshake.auth.username
     console.log('xxx', socket.handshake.auth)
     // if (!username) {
@@ -39,7 +50,7 @@ const chatGame = (io) => {
     next()
   })
 
-  io.on('connection', (socket:Socket<ClientToServerEvents, ServerToClientEvents>) => {
+  io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents>) => {
     // console.log('socket io ', socket.id)
     socket.on('new_username', (data: ConnectedUsersInterface) => {
       if (!users.find((usr) => usr.username === data.username)) {
@@ -55,7 +66,7 @@ const chatGame = (io) => {
       }
     })
 
-    socket.on('private_message', async(data) => {
+    socket.on('private_message', async (data) => {
       try {
         const sender = users.find((user) => user.socketID === socket.id)
         const messageToSend = {
@@ -65,11 +76,11 @@ const chatGame = (io) => {
         }
         private_messages.push(messageToSend)
         const new_message = await Message.create(messageToSend)
-        socket.emit('new_private_message',new_message)
-        socket.to(users.find(usr=>usr.username===new_message.to).socketID).emit('new_private_message',new_message)
+        socket.emit('new_private_message', new_message)
+        socket.to(users.find((usr) => usr.username === new_message.to).socketID).emit('new_private_message', new_message)
       } catch (error) {
-        socket.emit('error',JSON.stringify(error))
-        console.log("=>Error : ", error)
+        socket.emit('error', JSON.stringify(error))
+        console.log('=>Error : ', error)
       }
     })
 
@@ -86,55 +97,61 @@ const chatGame = (io) => {
       console.log('=>disconnect', users)
     })
 
-    socket.on('stop_game_request', ()=>{
-      const username = findUsernameWithSocketId(users,socket.id)
-      console.log('username : ',username)
-      if(username){
-        const foundGameIndex = games.findIndex(game=>{
-          if(game.player1===username || game.player2===username){
+    socket.on('stop_game_request', () => {
+      const username = findUsernameWithSocketId(users, socket.id)
+      console.log('username : ', username)
+      if (username) {
+        const foundGameIndex = games.findIndex((game) => {
+          if (game.player1 === username || game.player2 === username) {
             return true
           }
         })
         io.to(games[foundGameIndex].roomName).emit('stop_game_response')
-        games.splice(foundGameIndex,1)
-        if(games.length===0){
+        games.splice(foundGameIndex, 1)
+        if (games.length === 0) {
           clearInterval(intervallId)
-          intervallId=null
+          intervallId = null
         }
       }
     })
 
     // === GAME ===
-    socket.on('play_proposal_request',(proposalRequestMembers)=>{
+    socket.on('play_proposal_request', (proposalRequestMembers) => {
       try {
-        const emitterUser:ConnectedUsersInterface|undefined = users.find(user=>user.username===proposalRequestMembers.from)
-        if(emitterUser && socket.id === emitterUser.socketID){
-          const targetUser:ConnectedUsersInterface|undefined = users.find(user=>user.username===proposalRequestMembers.to)
+        const emitterUser: ConnectedUsersInterface | undefined = users.find(
+          (user) => user.username === proposalRequestMembers.from
+        )
+        if (emitterUser && socket.id === emitterUser.socketID) {
+          const targetUser: ConnectedUsersInterface | undefined = users.find(
+            (user) => user.username === proposalRequestMembers.to
+          )
           // proposals.push(proposalRequestMembers)
-          const proposalObject:ProposalInterface = {
+          const proposalObject: ProposalInterface = {
             from: proposalRequestMembers.from,
             to: proposalRequestMembers.to,
             isAccepted: false,
-            roomName: proposalRequestMembers.from
+            roomName: proposalRequestMembers.from,
           }
           proposals.push(proposalObject)
-          socket.join(proposalRequestMembers.from);
-          io.to(targetUser.socketID).emit('play_proposal_request',proposalObject)
+          socket.join(proposalRequestMembers.from)
+          io.to(targetUser.socketID).emit('play_proposal_request', proposalObject)
         }
       } catch (error) {
         console.log(error)
-        socket.emit('error',JSON.stringify(error))
+        socket.emit('error', JSON.stringify(error))
       }
     })
 
-    socket.on('play_proposal_response',(proposalRequestMembers)=>{
+    socket.on('play_proposal_response', (proposalRequestMembers) => {
       console.log('play_proposal_response : ', proposalRequestMembers, proposals)
-      const foundProposalIndex = proposals.findIndex(proposal=>proposal.from===proposalRequestMembers.from && proposal.to===proposalRequestMembers.to)
-      const socketOfFROMUser = findSocketIdWithUsername(users,proposalRequestMembers.from).socketID
+      const foundProposalIndex = proposals.findIndex(
+        (proposal) => proposal.from === proposalRequestMembers.from && proposal.to === proposalRequestMembers.to
+      )
+      const socketOfFROMUser = findSocketIdWithUsername(users, proposalRequestMembers.from).socketID
       console.log('found proposal : ', proposals[foundProposalIndex])
       console.log('proposalRequestsMembers : ', proposalRequestMembers)
-      if(proposalRequestMembers.isAccepted && foundProposalIndex>=0 && socketOfFROMUser){
-        const game = new Game([GAME_BOARD_WIDTH,GAME_BOARD_HEIGHT])
+      if (proposalRequestMembers.isAccepted && foundProposalIndex >= 0 && socketOfFROMUser) {
+        const game = new Game([GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT])
         const dataToSend: GameInitialisation = {
           player1: proposalRequestMembers.from,
           player2: proposalRequestMembers.to,
@@ -144,25 +161,25 @@ const chatGame = (io) => {
           dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT],
           bricks: game.bricksHandler.getBricksPositions(),
           ball: {
-            x:game.ball.getX(),
-            y:game.ball.getX(),
-            radius: game.ball.radius
+            x: game.ball.getX(),
+            y: game.ball.getX(),
+            radius: game.ball.radius,
           },
-          barDim:{
-            height:game.barLength,
-            width:game.barWidth
+          barDim: {
+            height: game.barLength,
+            width: game.barWidth,
           },
-          brickDim:{
-            width:game.bricksHandler.brickWidth,
-            height:game.bricksHandler.brickHeight
+          brickDim: {
+            width: game.bricksHandler.brickWidth,
+            height: game.bricksHandler.brickHeight,
           },
           player1Bar: {
-            x:game.bar1.x,
-            y:game.bar1.y,
+            x: game.bar1.x,
+            y: game.bar1.y,
           },
-          player2Bar:{
-            x:game.bar2.x,
-            y:game.bar2.y,
+          player2Bar: {
+            x: game.bar2.x,
+            y: game.bar2.y,
           },
         }
         games.push({
@@ -170,30 +187,46 @@ const chatGame = (io) => {
           game: game,
           isWaitingToBegin: true,
           waitingTime: 0,
-          io: io
+          io: io,
         })
 
         socket.join(proposalRequestMembers.roomName)
-        proposals.splice(foundProposalIndex,1)
+        proposals.splice(foundProposalIndex, 1)
         io.to(proposalRequestMembers.roomName).emit('play_confirmation', dataToSend)
 
-        if(!intervallId){
-          intervallId = setInterval(()=>{
-            games.forEach(gameRoom=>{
-              if(!gameRoom.isWaitingToBegin){
+        if (!intervallId) {
+          intervallId = setInterval(() => {
+            games.forEach((gameRoom) => {
+              if (!gameRoom.isWaitingToBegin) {
                 const infosToSend = gameRoom.game.clock()
-                io.to(gameRoom.roomName).emit('next_turn_to_display',infosToSend)
-              }else if(waitingCounts.includes(gameRoom.waitingTime) ){
-                io.to(gameRoom.roomName).emit('waitingClock',5-waitingCounts.findIndex(ms=>ms===gameRoom.waitingTime))
+                io.to(gameRoom.roomName).emit('next_turn_to_display', infosToSend)
+              } else if (waitingCounts.includes(gameRoom.waitingTime)) {
+                io.to(gameRoom.roomName).emit(
+                  'waitingClock',
+                  5 - waitingCounts.findIndex((ms) => ms === gameRoom.waitingTime)
+                )
                 console.log('=====>', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
-                gameRoom.waitingTime+=30
-              }else if(gameRoom.waitingTime>5000 && gameRoom.waitingTime<5100){
-                gameRoom.isWaitingToBegin=false
-              }else if(gameRoom.isWaitingToBegin){
-                gameRoom.waitingTime+=30
+                gameRoom.waitingTime += INTERVAL_DELAY
+              } else if (gameRoom.waitingTime > 5000 && gameRoom.waitingTime < 5100) {
+                gameRoom.isWaitingToBegin = false
+              } else if (gameRoom.isWaitingToBegin) {
+                gameRoom.waitingTime += INTERVAL_DELAY
               }
             })
-          },30)
+          }, INTERVAL_DELAY)
+        }
+      }
+    })
+
+    socket.on('new_move', (data) => {
+      console.log('new_move', data)
+      const foundGame = findRunningGameWithAUserName(games, data.username)
+      console.log('foundGame', foundGame)
+      if (foundGame) {
+        if (data.username === foundGame.player1) {
+          foundGame.game.player1NextMove(data.key)
+        } else if (data.username === foundGame.player1) {
+          foundGame.game.player2NextMove(data.key)
         }
       }
     })

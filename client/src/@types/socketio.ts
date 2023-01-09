@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io-client'
 import {PrivateMessageClientToServerInterface, MessageInterface} from './message'
 import { GameInfosServerToClientInterface, GameInitialisation } from './gameCommon'
 
@@ -28,6 +27,7 @@ export interface ClientToServerEvents {
   play_proposal_request: (data:ProposalInterface)=>void
   play_proposal_response: (data:ProposalInterface)=>void
   stop_game_request: ()=>void
+  new_move: (data:{username:string,key:string})=>void
 }
 
 

@@ -91,7 +91,6 @@ export default class Ball {
 
   move(): void {
     this.verifyAngleAndProtectAgainstOffLimits()
-    console.log('before ball : ',this.x,this.y,this.radius,this.speed)
     if (this.isInContactWithSideWalls()) {
       this.bouncesOnWall()
     }
@@ -113,7 +112,6 @@ export default class Ball {
       this.x = this.x + Math.cos(directionInRad) * this.speed
       this.y = this.y - Math.sin(directionInRad) * this.speed
     }
-    console.log('after ball : ',this.x,this.y,this.radius,this.speed)
   }
 
   launch(directionInDeg: number): void {

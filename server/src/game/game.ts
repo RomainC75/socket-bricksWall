@@ -119,6 +119,14 @@ export default class Game {
     }
   }
 
+  player1NextMove(code){
+    this.nextMove.player1=code
+  }
+
+  player2NextMove(code){
+    this.nextMove.player2=code
+  }
+
 
   clock() {
     // this.updateCanvas()
@@ -132,6 +140,7 @@ export default class Game {
     this.nextMove.player1 = null
     const bar2Y = this.bar2.getY()
     this.nextMove.player2 = null
+
     return {
       bar1Y: bar1Y,
       bar2Y: bar2Y,
