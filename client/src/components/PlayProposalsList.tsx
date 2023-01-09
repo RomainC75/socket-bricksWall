@@ -5,6 +5,8 @@ import { SocketContextInterface } from '../@types/socketContext'
 
 import Button from '@mui/material/Button'
 
+import './styles/proposalList.css'
+
 // to Accept the proposal
 const PlayProposalsList = () => {
     const { socket, playProposalRequests } = useContext(SocketContext) as SocketContextInterface

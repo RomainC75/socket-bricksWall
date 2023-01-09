@@ -1,4 +1,33 @@
 .SendMessage {
   width: 100%;
+  margin: 10px auto 0 auto;
+  max-width: 500px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.SendMessage > .textMessage {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.SendMessage > .textMessage > .sendButton {
+  width: 150px;
+}
+
+.SendMessage > .textMessage > .message {
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
 }
 /*# sourceMappingURL=sendMessage.css.map */

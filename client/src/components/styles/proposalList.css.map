@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,aAAa,CAAA;EACT,WAAW,EAAC,IAAI;CACnB",
+    "sources": [
+        "proposalList.scss"
+    ],
+    "names": [],
+    "file": "proposalList.css"
+}
