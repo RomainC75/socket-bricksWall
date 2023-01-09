@@ -22,4 +22,5 @@ export interface SocketContextInterface {
   gameDisplay: React.MutableRefObject<GameDisplay|null>
   displayGameBool: boolean
   setDisplayGameBool:(displayGameBool: boolean) => void
+  prematchClock: number | null
 }

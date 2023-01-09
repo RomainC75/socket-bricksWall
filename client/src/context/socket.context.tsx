@@ -32,6 +32,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
   const [newGameInfosToDisplay, setNewGameInfosToDisplay] = useState<GameInfosServerToClientInterface|null>(null)
   const gameDisplay = useRef<GameDisplay|null>(null)
   const [displayGameBool, setDisplayGameBool] = useState<boolean>(false)
+  const [prematchClock, setPrematchClock ] = useState<number|null>(null)
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -139,6 +140,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
       socket.on('waitingClock',data=>{
         console.log('waiting clock', data)
+        setPrematchClock(data)
       })
 
       socket.on('stop_game_response',()=>{
@@ -182,7 +184,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         newGameInfosToDisplay,
         gameDisplay,
         displayGameBool,
-        setDisplayGameBool
+        setDisplayGameBool,
+        prematchClock
       }}
     >
       {props.children}
