@@ -17,7 +17,7 @@ export default class Ball {
     this.x = x
     this.y = y
     this.speed = 3
-    this.directionInDeg = 0
+    this.directionInDeg = 10
     this.canvasDimensions = canvasDimensions
     this.radius = radius
   }

@@ -6,6 +6,7 @@ import { GameInitialisation } from "../@types/gameCommon"
 
 const Message = require('../models/message.model')
 const {findSocketIdWithUsername} = require('../utils/tools')
+const {findUsernameWithSocketId}  = require('../utils/tools')
 
 const GAME_BOARD_WIDTH = 600
 const GAME_BOARD_HEIGHT = 300
@@ -83,6 +84,24 @@ const chatGame = (io) => {
       users = users.filter((user) => socket.id !== user.socketID)
       socket.broadcast.emit('connected_users', users)
       console.log('=>disconnect', users)
+    })
+
+    socket.on('stop_game_request', ()=>{
+      const username = findUsernameWithSocketId(users,socket.id)
+      console.log('username : ',username)
+      if(username){
+        const foundGameIndex = games.findIndex(game=>{
+          if(game.player1===username || game.player2===username){
+            return true
+          }
+        })
+        io.to(games[foundGameIndex].roomName).emit('stop_game_response')
+        games.splice(foundGameIndex,1)
+        if(games.length===0){
+          clearInterval(intervallId)
+          intervallId=null
+        }
+      }
     })
 
     // === GAME ===
