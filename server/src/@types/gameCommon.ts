@@ -3,7 +3,7 @@ export interface GameInitialisation {
   player2: string
   roomName: string
   isAccepted: boolean
-  isWaiting: boolean
+  isWaitingToBegin: boolean
   dimensions: [number, number]
   bricks: BrickPosition[]
   ball: {

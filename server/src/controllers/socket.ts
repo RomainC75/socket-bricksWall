@@ -18,6 +18,7 @@ let proposals: ProposalInterface[] = []
 
 let games: PlayingGameInterface[] = []
 let intervallId: NodeJS.Timer | null = null
+const waitingCounts: number[] = [1020, 2010, 3000, 4020, 5010]
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -120,7 +121,7 @@ const chatGame = (io) => {
           player2: proposalRequestMembers.to,
           roomName: proposalRequestMembers.roomName,
           isAccepted: true,
-          isWaiting: true,
+          isWaitingToBegin: true,
           dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT],
           bricks: game.bricksHandler.getBricksPositions(),
           ball: {
@@ -141,8 +142,8 @@ const chatGame = (io) => {
             y:game.bar1.y,
           },
           player2Bar:{
-            x:game.bar1.x,
-            y:game.bar1.y,
+            x:game.bar2.x,
+            y:game.bar2.y,
           },
         }
         games.push({
@@ -158,13 +159,20 @@ const chatGame = (io) => {
         io.to(proposalRequestMembers.roomName).emit('play_confirmation', dataToSend)
 
         if(!intervallId){
+          
           intervallId = setInterval(()=>{
             games.forEach(gameRoom=>{
-              if(gameRoom.isWaitingToBegin){
-                gameRoom.waitingTime+=30
-              }else{
+              console.log('=====>', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
+              if(!gameRoom.isWaitingToBegin){
                 const infosToSend = gameRoom.game.clock()
                 io.to(gameRoom.roomName).emit('next_turn_to_display',infosToSend)
+              }else if(waitingCounts.includes(gameRoom.waitingTime) ){
+                io.to(gameRoom.roomName).emit('waitingClock',waitingCounts.findIndex(ms=>ms===gameRoom.waitingTime)+1)
+                gameRoom.waitingTime+=30
+              }else if(gameRoom.waitingTime>5000 && gameRoom.waitingTime<5100){
+                gameRoom.isWaitingToBegin=false
+              }else if(gameRoom.isWaitingToBegin){
+                gameRoom.waitingTime+=30
               }
               
             })
