@@ -51,7 +51,7 @@ export const Chat = () => {
       <MessagesBox conversation={filteredMessages} isPublic={isPublic} />
       <SendMessage selectedChannel={selectedChannel} />
 
-      {JSON.stringify(filteredMessages)}
+      {/* {JSON.stringify(filteredMessages)} */}
     </div>
   )
 }
