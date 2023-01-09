@@ -159,22 +159,20 @@ const chatGame = (io) => {
         io.to(proposalRequestMembers.roomName).emit('play_confirmation', dataToSend)
 
         if(!intervallId){
-          
           intervallId = setInterval(()=>{
             games.forEach(gameRoom=>{
-              console.log('=====>', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
               if(!gameRoom.isWaitingToBegin){
                 const infosToSend = gameRoom.game.clock()
                 io.to(gameRoom.roomName).emit('next_turn_to_display',infosToSend)
               }else if(waitingCounts.includes(gameRoom.waitingTime) ){
-                io.to(gameRoom.roomName).emit('waitingClock',waitingCounts.findIndex(ms=>ms===gameRoom.waitingTime)+1)
+                io.to(gameRoom.roomName).emit('waitingClock',5-waitingCounts.findIndex(ms=>ms===gameRoom.waitingTime))
+                console.log('=====>', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
                 gameRoom.waitingTime+=30
               }else if(gameRoom.waitingTime>5000 && gameRoom.waitingTime<5100){
                 gameRoom.isWaitingToBegin=false
               }else if(gameRoom.isWaitingToBegin){
                 gameRoom.waitingTime+=30
               }
-              
             })
           },30)
         }

@@ -51,11 +51,13 @@ export default class Ball {
     }
   }
   bouncesOnLeftSide() {
+    console.log('before : ', this.directionInDeg)
    if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg 
     } else if (this.directionInDeg >= 180 && this.directionInDeg < 270) {
       this.directionInDeg = 540 - this.directionInDeg 
     }
+    console.log('after : ',this.directionInDeg)
   }
   bouncesOnTopSide(){
    this.directionInDeg = 360 - this.directionInDeg 
@@ -80,7 +82,7 @@ export default class Ball {
   }
 
   verifyAngleAndProtectAgainstOffLimits() {
-    if (this.directionInDeg > 360) {
+    if (this.directionInDeg >= 360) {
       this.directionInDeg = this.directionInDeg % 360
     } else if (this.directionInDeg < 0) {
       this.directionInDeg = 360 + this.directionInDeg
@@ -89,6 +91,7 @@ export default class Ball {
 
   move(): void {
     this.verifyAngleAndProtectAgainstOffLimits()
+    console.log('before ball : ',this.x,this.y,this.radius,this.speed)
     if (this.isInContactWithSideWalls()) {
       this.bouncesOnWall()
     }
@@ -110,6 +113,7 @@ export default class Ball {
       this.x = this.x + Math.cos(directionInRad) * this.speed
       this.y = this.y - Math.sin(directionInRad) * this.speed
     }
+    console.log('after ball : ',this.x,this.y,this.radius,this.speed)
   }
 
   launch(directionInDeg: number): void {

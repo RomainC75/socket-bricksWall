@@ -43,10 +43,9 @@ export default class Game {
     // this.bricksHandler.oneCentralBrickInitialiser()
     this.nextMove = {
       player1: null,
-      player2: null
+      player2: null,
     }
   }
-
 
   isInFrontOfBar(bar: Bar): boolean {
     if (this.ball.getY() > bar.getY() - this.barLength / 2 && this.ball.getY() < bar.getY() + this.barLength / 2) {
@@ -64,7 +63,7 @@ export default class Game {
         ) {
           this.ball.bouncesOnRightSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error('')
+          // throw new Error('')
         } else if (
           this.ball.directionInDeg >= 90 &&
           this.ball.directionInDeg < 270 &&
@@ -72,18 +71,20 @@ export default class Game {
         ) {
           this.ball.bouncesOnLeftSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error('')
+          // throw new Error('')
         } else if (this.ball.directionInDeg > 180 && this.ball.isInContactWithBottomSideOfBrick(brick)) {
           this.ball.bouncesOnTopSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error('')
+          // throw new Error('')
         } else if (this.ball.directionInDeg < 180 && this.ball.isInContactWithTopSideOfBrick(brick)) {
           this.ball.bouncesOnBottomSide()
           this.bricksHandler.removeBrickAt(index)
-          throw new Error('')
+          // throw new Error('')
         }
       })
-    } catch (error) {}
+    } catch (error) {
+      console.log('!!! error : ', error )
+    }
   }
 
   handleIfBouncingOnAWall() {
@@ -97,12 +98,27 @@ export default class Game {
     }
   }
 
-  handlePlayer1NextMove(command:string){
-    this.nextMove.player1=command
+  // handlePlayer1NextMove(command: string) {
+  //   this.nextMove.player1 = command
+  // }
+  // handlePlayer2NextMove(command: string) {
+  //   this.nextMove.player2 = command
+  // }
+
+  moveBars(){
+    if(this.nextMove.player1==='up'){
+      this.bar1.goUp()
+    }else if(this.nextMove.player1==='down'){
+      this.bar1.goDown()
+    }
+
+    if(this.nextMove.player2==='up'){
+      this.bar1.goUp()
+    }else if(this.nextMove.player2==='down'){
+      this.bar1.goDown()
+    }
   }
-  handlePlayer2NextMove(command:string){
-    this.nextMove.player2=command
-  }
+
 
   clock() {
     // this.updateCanvas()
@@ -110,16 +126,17 @@ export default class Game {
     this.handleIfBouncingOnABrick()
 
     this.ball.move()
+    this.moveBars()
 
     const bar1Y = this.bar1.getY()
-    this.bar1=null
+    this.nextMove.player1 = null
     const bar2Y = this.bar2.getY()
-    this.bar2=null
+    this.nextMove.player2 = null
     return {
-      bar1Y:bar1Y,
-      bar2Y:bar2Y,
-      ball:[this.ball.getX(), this.ball.getY()],
-      bricks: this.bricksHandler.getBricksPositions()
+      bar1Y: bar1Y,
+      bar2Y: bar2Y,
+      ball: [this.ball.getX(), this.ball.getY()],
+      bricks: this.bricksHandler.getBricksPositions(),
     }
   }
 }
