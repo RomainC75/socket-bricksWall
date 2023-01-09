@@ -3,7 +3,7 @@ export interface GameInitialisation {
   player2: string
   roomName: string
   isAccepted: boolean
-  isWaiting: boolean
+  isWaitingToBegin: boolean
   dimensions: [number, number]
   bricks: BrickPosition[]
   ball: {
@@ -13,8 +13,8 @@ export interface GameInitialisation {
   }
   barDim: RectangleDimensions
   brickDim: RectangleDimensions
-  player1Bar: PlayerBarInitialisationInterface
-  player2Bar: PlayerBarInitialisationInterface
+  player1Bar: PlayerBarCoordinatesInterface
+  player2Bar: PlayerBarCoordinatesInterface
 }
 
 export interface GameInfosServerToClientInterface {
@@ -35,7 +35,7 @@ export interface RectangleDimensions {
   height: number
 }
 
-export interface PlayerBarInitialisationInterface {
+export interface PlayerBarCoordinatesInterface {
   x: number
   y: number
 }

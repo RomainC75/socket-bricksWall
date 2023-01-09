@@ -2,20 +2,24 @@ import Bar from './bar'
 import Ball from './ball'
 import BricksHandler from './bricksHandler'
 import Brick from './brick'
-import { GameInitialisation, BrickPosition, RectangleDimensions } from '../../@types/gameCommon'
+import {
+  GameInitialisation,
+  BrickPosition,
+  RectangleDimensions,
+  GameInfosServerToClientInterface,
+  PlayerBarCoordinatesInterface,
+} from '../../@types/gameCommon'
 
 export default class GameDisplay {
   ctx: CanvasRenderingContext2D
-  bar1: Bar
-  bar2: Bar
+  bar1: PlayerBarCoordinatesInterface
+  bar2: PlayerBarCoordinatesInterface
   canvasDimensions: [number, number]
   barWidth: number
   barLength: number
   clockStarted: boolean
   ball: Ball
   ballRadius: number
-  bar1_X: number
-  bar2_X: number
   isPlayer1Turn: boolean
   bricksPositions: BrickPosition[]
   brickDim: RectangleDimensions
@@ -25,10 +29,14 @@ export default class GameDisplay {
     this.ctx = context
     this.barWidth = gameInitialisation.barDim.width
     this.barLength = gameInitialisation.barDim.height
-    this.bar1_X = gameInitialisation.player1Bar.x
-    this.bar2_X = gameInitialisation.player1Bar.y
-    this.bar1 = new Bar(this.bar1_X, gameInitialisation.dimensions, this.barLength, this.barWidth, true)
-    this.bar2 = new Bar(this.bar2_X, gameInitialisation.dimensions, this.barLength, this.barWidth, false)
+    this.bar1 = {
+      x: gameInitialisation.player1Bar.x,
+      y: gameInitialisation.player1Bar.y,
+    }
+    this.bar2 = {
+      x: gameInitialisation.player2Bar.x,
+      y: gameInitialisation.player2Bar.y,
+    }
     this.canvasDimensions = gameInitialisation.dimensions
     this.ctx.fillRect(20, 20, 20, 20)
     this.clockStarted = false
@@ -40,29 +48,29 @@ export default class GameDisplay {
       this.ballRadius
     )
     this.isPlayer1Turn = false
-    this.bricksPositions=gameInitialisation.bricks
+    this.bricksPositions = gameInitialisation.bricks
     this.brickDim = gameInitialisation.brickDim
-    
+
     // this.bricksHandler.oneCentralBrickInitialiser()
     this.firstDraw()
   }
 
-  attachEvents(){
-    document.addEventListener('keydown', (e:KeyboardEvent) => {
-        console.log(e.keyCode)
-        switch (e.keyCode) {
-          case 38:
-            console.log('upo')
-            break
-          case 40:
-            console.log('down')
-            break
-          case 32:
-            console.log('space')
-            break
-        }
-      })
-}
+  attachEvents() {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      console.log(e.keyCode)
+      switch (e.keyCode) {
+        case 38:
+          console.log('up')
+          break
+        case 40:
+          console.log('down')
+          break
+        case 32:
+          console.log('space')
+          break
+      }
+    })
+  }
 
   drawBall() {
     this.ctx.beginPath()
@@ -72,9 +80,11 @@ export default class GameDisplay {
     this.ctx.closePath()
   }
 
-  drawBar(bar: Bar) {
+  drawBars() {
     this.ctx.fillStyle = 'blue'
-    this.ctx.fillRect(bar.getCoordinatesToDraw()[0], bar.getCoordinatesToDraw()[1], this.barWidth, this.barLength)
+    this.ctx.fillRect(this.bar1.x, this.bar1.y, this.barWidth, this.barLength)
+    this.ctx.fillStyle = 'blue'
+    this.ctx.fillRect(this.bar2.x, this.bar2.y, this.barWidth, this.barLength)
   }
 
   drawBrick(brick: BrickPosition, brickDim: RectangleDimensions) {
@@ -94,12 +104,9 @@ export default class GameDisplay {
     this.ctx.clearRect(0, 0, this.canvasDimensions[0], this.canvasDimensions[1])
   }
 
-
-  firstDraw(){
+  firstDraw() {
     this.updateCanvas()
-    this.drawBar(this.bar1)
-    this.drawBar(this.bar2)
-
+    this.drawBars()
 
     this.ball.move()
     this.drawBall()
@@ -107,20 +114,22 @@ export default class GameDisplay {
     this.drawBricks()
   }
 
+  setNewPositions(data: GameInfosServerToClientInterface) {
+    this.bar1.y=data.bar1Y
+    this.bar2.y=data.bar2Y
+    this.ball.setNewCoordinates(data.ball)
+    this.bricksPositions=data.bricks
+  }
 
-
-
-  startClock() {
+  displayNextImage() {
     this.updateCanvas()
-    this.drawBar(this.bar1)
-    this.drawBar(this.bar2)
+    this.drawBars()
 
 
-    this.ball.move()
+    // this.ball.move()
     this.drawBall()
-
     this.drawBricks()
-
-    requestAnimationFrame(() => this.startClock())
+    console.log('this.ball ',this.ball.getX(),this.ball.getY())
+    // requestAnimationFrame(() => this.displayNextImage())
   }
 }

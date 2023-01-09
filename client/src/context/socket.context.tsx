@@ -7,7 +7,7 @@ import { ServerToClientEvents, ClientToServerEvents } from '../@types/socketio'
 import { getPingTime } from '../utils/ping'
 import toast from 'react-hot-toast'
 import { MessageInterface } from '../@types/message'
-import { GameInitialisation } from '../@types/gameCommon'
+import { GameInfosServerToClientInterface, GameInitialisation } from '../@types/gameCommon'
 
 const SocketContext = createContext<SocketContextInterface | null>(null)
 
@@ -28,6 +28,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
   // const [gameDisplayState, setGameDisplayState] = useState<>(null)
   const [gameInitialisation, setGameInitialisation] = useState<GameInitialisation|null>(null)
+  const [newGameInfosToDisplay, setNewGameInfosToDisplay] = useState<GameInfosServerToClientInterface|null>(null)
 
   useEffect(() => {
     const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(API_URL, {
@@ -53,6 +54,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       }
     }, 3000)
   }, [])
+
 
   useEffect(() => {
     if (socket) {
@@ -128,6 +130,11 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
 
       socket.on('next_turn_to_display', (data) => {
         console.log('data : ', data)
+        setNewGameInfosToDisplay(data)
+      })
+
+      socket.on('waitingClock',data=>{
+        console.log('waiting clock', data)
       })
 
       return () => {
@@ -161,7 +168,8 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         publicMessages,
         username,
         playProposalRequests,
-        gameInitialisation
+        gameInitialisation,
+        newGameInfosToDisplay
       }}
     >
       {props.children}

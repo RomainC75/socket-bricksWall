@@ -16,6 +16,7 @@ export interface ServerToClientEvents {
   play_confirmation: (data:GameInitialisation)=>void
   error: (data: string)=>void
   next_turn_to_display: (data:GameInfosServerToClientInterface)=>void
+  waitingClock: (data:number)=>void
 }
 
 export interface ClientToServerEvents {

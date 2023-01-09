@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useContext } from 'react'
-import { GameInitialisation } from '../@types/gameCommon'
+import { GameInfosServerToClientInterface, GameInitialisation } from '../@types/gameCommon'
 import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketContext'
 
@@ -9,17 +9,25 @@ import './styles/canvas.css'
 
 
 const Canvas = () => {
-   const { socket, isConnectedToSocket, isConnectedAsUser, gameInitialisation } = useContext(SocketContext) as SocketContextInterface
+   const { socket, isConnectedToSocket, isConnectedAsUser, gameInitialisation, newGameInfosToDisplay } = useContext(SocketContext) as SocketContextInterface
    const canvasRef = useRef<HTMLCanvasElement>(null)
+   // let gameDisplay: GameDisplay|null = null
+   const gameDisplay = useRef<GameDisplay|null>(null)
 
    useEffect(() => {
       const canvas: HTMLCanvasElement | null = canvasRef.current
       const context: CanvasRenderingContext2D | null = canvas && canvas.getContext('2d')
       if (context && gameInitialisation) {
-         const gameDisplay = new GameDisplay( context, gameInitialisation)
+         gameDisplay.current = new GameDisplay( context, gameInitialisation)
 
       }
    }, [])
+
+   useEffect(()=>{
+      console.log('update ! ', gameDisplay, newGameInfosToDisplay)
+      gameDisplay.current && newGameInfosToDisplay && gameDisplay.current.setNewPositions(newGameInfosToDisplay)
+      gameDisplay.current && gameDisplay.current.displayNextImage()
+   },[newGameInfosToDisplay])
 
    return (
       <div className="canvasGame">

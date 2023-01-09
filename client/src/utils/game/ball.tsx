@@ -173,4 +173,9 @@ export default class Ball {
       return true
     }
   }
+
+  setNewCoordinates(coord:[number, number]){
+    this.x=coord[0]
+    this.y=coord[1]
+   }
 }
