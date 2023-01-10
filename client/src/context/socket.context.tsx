@@ -104,11 +104,20 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       })
 
       socket.on('new_public_message',data=>{
-        console.log('new_public_message : ',data)
-        setPublicMessages((publicMessages)=>[data,...publicMessages])
+        setUsername(username=>{
+          if(data.from===username){
+            data.fromSelf=true
+          }
+          console.log('new_public_message : ',data,username)
+          setPublicMessages((publicMessages)=>[data,...publicMessages])
+          
+          return username
+        })
+        
       })
 
       socket.on('new_private_message', (data) => {
+        
         console.log('==>new_private_message : ', data, username)
         setUsername((username) => {
           if (data.from === username) {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { SocketContext } from '../context/socket.context'
 import { SocketContextInterface } from '../@types/socketContext'
 import MessagesBox from './MessagesBox'
@@ -24,7 +24,6 @@ export const Chat = () => {
   }
 
   useEffect(()=>{
-    
     if(selectedChannel==='public'){
       setFilteredMessages(publicMessages)
     }else{
@@ -50,7 +49,7 @@ export const Chat = () => {
       <MessagesBox conversation={filteredMessages} selectedChannel={selectedChannel}/>
       <SendMessage selectedChannel={selectedChannel} />
           
-      {JSON.stringify(selectedChannel)}
+      {/* {JSON.stringify(selectedChannel)} */}
     </div>
   )
 }

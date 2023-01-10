@@ -31,7 +31,7 @@ const MessagesBox = ({ conversation, selectedChannel }: MessagesBoxInterface) =>
           )
         })}
         {}
-      {JSON.stringify(conversation)}
+      {/* {JSON.stringify(conversation)} */}
     </div>
   )
 }
