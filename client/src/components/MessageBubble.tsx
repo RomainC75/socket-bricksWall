@@ -5,7 +5,6 @@ import { PublicMessageInterface, PrivateMessageInterface } from '../@types/messa
 
 export const MessageBubble = ({message}: PublicMessageInterface|PrivateMessageInterface) => {
 
-
   return (
     <div className='MessageBubble'>MessageBubble</div>
   )

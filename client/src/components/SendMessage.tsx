@@ -7,7 +7,6 @@ import { SocketContextInterface } from '../@types/socketContext'
 import './styles/sendMessage.css'
 import { sendPrivatMessage, sendPublicMessage } from '../utils/messageTools'
 import PlayProposalButton from './PlayProposalButton'
-import { selectClasses } from '@mui/material'
 import PlayProposalsList from './PlayProposalsList'
 
 interface SendMessageInterface {
@@ -15,7 +14,7 @@ interface SendMessageInterface {
 }
 
 const SendMessage = ({ selectedChannel }: SendMessageInterface): JSX.Element => {
-  const { socket, connectedUsers, privateMessages, publicMessages, playProposalRequests } = useContext(
+  const { socket, playProposalRequests } = useContext(
     SocketContext
   ) as SocketContextInterface
   const [newMessage, setNewMessage] = useState<string>('')

@@ -10,29 +10,28 @@ import './styles/chat.css'
 export const Chat = () => {
   const { socket, connectedUsers, privateMessages, publicMessages } = useContext(SocketContext) as SocketContextInterface
   const [filteredMessages, setFilteredMessages] = useState<(PublicMessageInterface|PrivateMessageInterface)[]>([])
-  const [isPublic, setIsPublic] = useState<boolean>(false)
   const [selectedChannel, setSelectedChannel] = useState<string | null>(null)
 
   const handleSelectChannel = (username: string) => {
     setSelectedChannel(username)
     if (username === 'public') {
       setFilteredMessages(publicMessages)
-      setIsPublic(true)
+      console.log('ALL public messages : ', publicMessages)
     } else {
-      setFilteredMessages(privateMessages.filter((user) => user.from === username && user.to === username))
-      setIsPublic(false)
+      setFilteredMessages(privateMessages.filter((user) => user.from === username || user.to === username))
+      console.log('ALL PRivate messages : ', privateMessages)
     }
   }
 
   useEffect(()=>{
-    setFilteredMessages(privateMessages.filter((user) => user.from === selectedChannel || user.to === selectedChannel))
-    console.log('===>',privateMessages)
-  },[privateMessages, selectedChannel])
-
-
-  useEffect(()=>{
-
-  },[publicMessages])
+    
+    if(selectedChannel==='public'){
+      setFilteredMessages(publicMessages)
+    }else{
+      setFilteredMessages(privateMessages.filter((user) => user.from === selectedChannel || user.to === selectedChannel))
+      console.log('===>',privateMessages)
+    }
+  },[publicMessages, privateMessages])
 
   return (
     <div className="Chat">
@@ -48,10 +47,10 @@ export const Chat = () => {
             </div>
           ))}
       </div>
-      <MessagesBox conversation={filteredMessages} isPublic={isPublic} />
+      <MessagesBox conversation={filteredMessages} selectedChannel={selectedChannel}/>
       <SendMessage selectedChannel={selectedChannel} />
-
-      {/* {JSON.stringify(filteredMessages)} */}
+          
+      {JSON.stringify(selectedChannel)}
     </div>
   )
 }

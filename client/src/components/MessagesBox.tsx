@@ -1,13 +1,18 @@
+import { useEffect } from 'react'
 import { PrivateMessageInterface, PublicMessageInterface } from '../@types/message'
 
 import './styles/messagesBox.css'
 
 interface MessagesBoxInterface {
   conversation: (PublicMessageInterface | PrivateMessageInterface)[]
-  isPublic?: boolean
+  selectedChannel: string | null
 }
 
-const MessagesBox = ({ conversation, isPublic }: MessagesBoxInterface) => {
+const MessagesBox = ({ conversation, selectedChannel }: MessagesBoxInterface) => {
+  useEffect(() => {
+    console.log('conversation : ', conversation)
+  }, [conversation])
+  
   return (
     <div className="MessagesBox">
       {conversation
@@ -25,6 +30,8 @@ const MessagesBox = ({ conversation, isPublic }: MessagesBoxInterface) => {
             </div>
           )
         })}
+        {}
+      {JSON.stringify(conversation)}
     </div>
   )
 }

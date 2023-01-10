@@ -109,7 +109,7 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
       })
 
       socket.on('new_private_message', (data) => {
-        console.log('==>data : ', data, username)
+        console.log('==>new_private_message : ', data, username)
         setUsername((username) => {
           if (data.from === username) {
             data.fromSelf = true
