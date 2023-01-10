@@ -23,7 +23,11 @@ const MessagesBox = ({ conversation, selectedChannel }: MessagesBoxInterface) =>
           const minutes = fullTime.getMinutes() < 10 ? `0${fullTime.getMinutes()}` : fullTime.getMinutes() 
           return (
             <div className={message.fromSelf ? 'message self' : 'message'} key={message._id}>
-              <div className="time">{`${hours}:${minutes}`}</div>
+              <div className="header">
+                <div className="time">{`${hours}:${minutes}`}</div>
+                <div className="from">{selectedChannel==='public' && !message.fromSelf && message.from }</div>
+
+              </div>
               <div className={message.fromSelf ? 'text self' : 'text'}>
                 <p>{message.message}</p>
               </div>
