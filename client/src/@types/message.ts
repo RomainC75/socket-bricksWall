@@ -4,8 +4,8 @@ export interface PublicMessageInterface {
   message: string
   fromSelf?: boolean
   from: string
-  
   createdAt: string
+  isNewMessage: boolean
 }
 
 export interface PrivateMessageInterface extends PublicMessageInterface {

@@ -67,7 +67,6 @@ export default class Ball {
   }
 
   
-
   bouncesOnPaddle(distanceToTheCenter: number): void {
     const nudge = distanceToTheCenter * SIDE_EFFECT
     if (this.directionInDeg >= 90 && this.directionInDeg < 180) {

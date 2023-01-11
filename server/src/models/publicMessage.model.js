@@ -1,10 +1,9 @@
 const { Schema, model, SchemaTypes } = require('mongoose')
 
-const messageSchema = new Schema(
+const publicMessageSchema = new Schema(
   {
     message: String,
     from: String,
-    to: String,
     isNewMessage: Boolean
   },
   {
@@ -12,6 +11,6 @@ const messageSchema = new Schema(
   }
 )
 
-const Message = model('Message', messageSchema)
+const PublicMessage = model('PublicMessage', publicMessageSchema)
 
-module.exports = Message
+module.exports = PublicMessage

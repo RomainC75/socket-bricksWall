@@ -16,6 +16,7 @@ app.set('view engine', 'jade');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/messages', require('./routes/messages'))
 
 
 

@@ -31,8 +31,5 @@ export default class Bar {
    getY(){
     return this.y
    }
-   setNewCoordinates(coord:{x:number,y:number}){
-      this.x=coord.x
-      this.y=coord.y
-   }
+   
 }

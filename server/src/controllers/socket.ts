@@ -11,6 +11,7 @@ import Game from '../game/game'
 import { GameInitialisation } from '../@types/gameCommon'
 
 const Message = require('../models/message.model')
+const PublicMessage = require('../models/publicMessage.model')
 const { findSocketIdWithUsername, findUsernameWithSocketId, findRunningGameWithAUserName } = require('../utils/tools')
 
 const GAME_BOARD_WIDTH = 600
@@ -66,6 +67,23 @@ const chatGame = (io) => {
       }
     })
 
+    socket.on('public_message', async(data)=>{
+      try {
+        const sender = users.find((user) => user.socketID === socket.id)
+        const messageToSend ={
+          from: sender.username,
+          message: data.message,
+          isNew: true
+        }
+        console.log('public : ',data, sender)
+        const ans = await PublicMessage.create(messageToSend)
+        console.log('public message ans ',ans)
+        io.emit('new_public_message', ans)
+      } catch (error) {
+        
+      }
+    })
+
     socket.on('private_message', async (data) => {
       try {
         const sender = users.find((user) => user.socketID === socket.id)
@@ -73,6 +91,7 @@ const chatGame = (io) => {
           message: data.message,
           from: sender.username,
           to: data.to,
+          isNew: true
         }
         private_messages.push(messageToSend)
         const new_message = await Message.create(messageToSend)
