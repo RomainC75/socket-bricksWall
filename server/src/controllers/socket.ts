@@ -172,7 +172,8 @@ const chatGame = (io) => {
           isAccepted: true,
           isWaitingToBegin: true,
           dimensions: [GAME_BOARD_WIDTH, GAME_BOARD_HEIGHT],
-          bricks: game.bricksHandler.getBricksPositions(),
+          // bricks: game.bricksHandler.getBricksPositions(),
+          bricks: [],
           ball: {
             x: game.ball.getX(),
             y: game.ball.getX(),
@@ -212,11 +213,14 @@ const chatGame = (io) => {
             games.forEach((gameRoom) => {
               if (!gameRoom.isWaitingToBegin) {
                 const infosToSendOrPoints = gameRoom.game.clock()
-                if ('points' in infosToSendOrPoints) {
+                if ('player1' in infosToSendOrPoints) {
                   gameRoom.isWaitingToBegin = true
                   gameRoom.waitingTime = 3000
+                  io.to(gameRoom.roomName).emit('new_score',infosToSendOrPoints)
+                  console.log('point : ',infosToSendOrPoints)
                 } else {
                   io.to(gameRoom.roomName).emit('next_turn_to_display', infosToSendOrPoints)
+                  console.log('next_turn : ', infosToSendOrPoints)
                 }
               } else if (gameRoom.waitingTime % 1000 === 0) {
                 io.to(gameRoom.roomName).emit('waitingClock', Math.round(gameRoom.waitingTime/1000))
@@ -227,6 +231,7 @@ const chatGame = (io) => {
               } else if (gameRoom.isWaitingToBegin) {
                 gameRoom.waitingTime -= INTERVAL_DELAY
               }
+              console.log('isWaitin / waiting/', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
             })
           }, INTERVAL_DELAY)
         }

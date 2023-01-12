@@ -44,7 +44,7 @@ export default class Game {
       this.ballRadius
     )
     this.bricksHandler = new BricksHandler(canvasDimensions)
-    this.bricksHandler.bricksInitialiser()
+    // this.bricksHandler.bricksInitialiser()
     // this.bricksHandler.oneCentralBrickInitialiser()
     this.nextMove = {
       player1: null,
