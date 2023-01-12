@@ -18,6 +18,7 @@ export interface ServerToClientEvents {
   next_turn_to_display: (data:GameInfosServerToClientInterface)=>void
   waitingClock: (data:number)=>void
   stop_game_response: ()=>void
+  new_score:(data:{player1:number,player2:number})=>void
 }
 
 export interface ClientToServerEvents {

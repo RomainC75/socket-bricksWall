@@ -152,6 +152,10 @@ function SocketProviderWrapper(props: PropsWithChildren<{}>) {
         setNewGameInfosToDisplay(data)
       })
 
+      socket.on('new_score',data=>{
+        console.log('new_score : ',data)
+      })
+
       socket.on('waitingClock',data=>{
         console.log('waiting clock', data)
         setPrematchClock(data)
