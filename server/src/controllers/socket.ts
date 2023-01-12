@@ -11,8 +11,7 @@ import Game from '../game/game'
 import { GameInitialisation } from '../@types/gameCommon'
 
 const PrivateMessage = require('../models/privateMessage.model')
-const {PublicMessage} = require('../models/publicMessage.model')
-
+const { PublicMessage } = require('../models/publicMessage.model')
 
 const { findSocketIdWithUsername, findUsernameWithSocketId, findRunningGameWithAUserName } = require('../utils/tools')
 
@@ -28,12 +27,6 @@ let proposals: ProposalInterface[] = []
 
 let games: PlayingGameInterface[] = []
 let intervallId: NodeJS.Timer | null = null
-const waitingCounts: number[] = [
-  1000+1000%INTERVAL_DELAY, 
-  2000+2000%INTERVAL_DELAY, 
-  3000+3000%INTERVAL_DELAY, 
-  4000+4000%INTERVAL_DELAY, 
-  5000+5000%INTERVAL_DELAY]
 
 const chatGame = (io) => {
   // console.log(io.opts)
@@ -69,21 +62,19 @@ const chatGame = (io) => {
       }
     })
 
-    socket.on('public_message', async(data)=>{
+    socket.on('public_message', async (data) => {
       try {
         const sender = users.find((user) => user.socketID === socket.id)
-        const messageToSend ={
+        const messageToSend = {
           from: sender.username,
           message: data.message,
-          isNew: true
+          isNew: true,
         }
-        console.log('public : ',data, sender)
+        console.log('public : ', data, sender)
         const ans = await PublicMessage.create(messageToSend)
-        console.log('public message ans ',ans)
+        console.log('public message ans ', ans)
         io.emit('new_public_message', ans)
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     })
 
     socket.on('private_message', async (data) => {
@@ -93,7 +84,7 @@ const chatGame = (io) => {
           message: data.message,
           from: sender.username,
           to: data.to,
-          isNew: true
+          isNew: true,
         }
         private_messages.push(messageToSend)
         const new_message = await PrivateMessage.create(messageToSend)
@@ -208,7 +199,7 @@ const chatGame = (io) => {
           ...dataToSend,
           game: game,
           isWaitingToBegin: true,
-          waitingTime: 0,
+          waitingTime: 5000,
           io: io,
         })
 
@@ -220,19 +211,21 @@ const chatGame = (io) => {
           intervallId = setInterval(() => {
             games.forEach((gameRoom) => {
               if (!gameRoom.isWaitingToBegin) {
-                const infosToSend = gameRoom.game.clock()
-                io.to(gameRoom.roomName).emit('next_turn_to_display', infosToSend)
-              } else if (waitingCounts.includes(gameRoom.waitingTime)) {
-                io.to(gameRoom.roomName).emit(
-                  'waitingClock',
-                  5 - waitingCounts.findIndex((ms) => ms === gameRoom.waitingTime)
-                )
+                const infosToSendOrPoints = gameRoom.game.clock()
+                if ('points' in infosToSendOrPoints) {
+                  gameRoom.isWaitingToBegin = true
+                  gameRoom.waitingTime = 3000
+                } else {
+                  io.to(gameRoom.roomName).emit('next_turn_to_display', infosToSendOrPoints)
+                }
+              } else if (gameRoom.waitingTime % 1000 === 0) {
+                io.to(gameRoom.roomName).emit('waitingClock', Math.round(gameRoom.waitingTime/1000))
                 console.log('=====>', gameRoom.isWaitingToBegin, gameRoom.waitingTime)
-                gameRoom.waitingTime += INTERVAL_DELAY
-              } else if (gameRoom.waitingTime > 5000 && gameRoom.waitingTime < 5100) {
+                gameRoom.waitingTime -= INTERVAL_DELAY
+              } else if (gameRoom.waitingTime < 0) {
                 gameRoom.isWaitingToBegin = false
               } else if (gameRoom.isWaitingToBegin) {
-                gameRoom.waitingTime += INTERVAL_DELAY
+                gameRoom.waitingTime -= INTERVAL_DELAY
               }
             })
           }, INTERVAL_DELAY)

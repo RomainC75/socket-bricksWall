@@ -2,6 +2,9 @@ import Bar from './bar'
 import Ball from './ball'
 import BricksHandler from './bricksHandler'
 import Brick from './brick'
+import { NewPositionsInterface, PointsInterface } from '../@types/game'
+
+const DISTANCE_BETWEEN_BARS_EDGES = 20
 
 export default class Game {
   bar1: Bar
@@ -19,13 +22,15 @@ export default class Game {
     player1: string | null
     player2: string | null
   }
+  points:PointsInterface
   //P1/left:true
 
   constructor(canvasDimensions: [number, number]) {
+    this.canvasDimensions=canvasDimensions
     this.barWidth = 10
     this.barLength = 50
-    this.bar1_X = 20
-    this.bar2_X = canvasDimensions[0] - this.barWidth / 2 - 20
+    this.bar1_X = DISTANCE_BETWEEN_BARS_EDGES
+    this.bar2_X = canvasDimensions[0] - this.barWidth / 2 - DISTANCE_BETWEEN_BARS_EDGES
     this.bar1 = new Bar(this.bar1_X, canvasDimensions, this.barLength, this.barWidth, true)
     this.bar2 = new Bar(this.bar2_X, canvasDimensions, this.barLength, this.barWidth, false)
     this.canvasDimensions = canvasDimensions
@@ -44,6 +49,10 @@ export default class Game {
     this.nextMove = {
       player1: null,
       player2: null,
+    }
+    this.points={
+      player1: 0,
+      player2: 0
     }
   }
 
@@ -119,16 +128,32 @@ export default class Game {
     }
   }
 
-  player1NextMove(code){
+  player1NextMove(code):void{
     this.nextMove.player1=code
   }
 
-  player2NextMove(code){
+  player2NextMove(code):void{
     this.nextMove.player2=code
   }
 
+  isBallOut():boolean{
+    return this.ball.getX()<0 || this.ball.getX()>this.canvasDimensions[0]
+  }
 
-  clock() {
+  scoreAPoint():void{
+    if(this.ball.getX()<0){
+      this.points.player1++
+    }else{
+      this.points.player2++
+    }
+  }
+
+  clock():NewPositionsInterface|PointsInterface {
+    
+    if(this.isBallOut()){
+      this.scoreAPoint()
+      return this.points
+    }
     // this.updateCanvas()
     this.handleIfBouncingOnAWall()
     this.handleIfBouncingOnABrick()

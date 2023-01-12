@@ -43,14 +43,14 @@ export default class Ball {
 
 
   // Bounce on brick
-  bouncesOnRightSide() {
+  bouncesOnRightSide():void {
     if (this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg
     } else if (this.directionInDeg >= 180) {
       this.directionInDeg = 540 - this.directionInDeg
     }
   }
-  bouncesOnLeftSide() {
+  bouncesOnLeftSide():void {
     console.log('before : ', this.directionInDeg)
    if (this.directionInDeg >= 90 && this.directionInDeg < 180) {
       this.directionInDeg = 180 - this.directionInDeg 
@@ -59,10 +59,10 @@ export default class Ball {
     }
     console.log('after : ',this.directionInDeg)
   }
-  bouncesOnTopSide(){
+  bouncesOnTopSide():void{
    this.directionInDeg = 360 - this.directionInDeg 
   }
-  bouncesOnBottomSide(){
+  bouncesOnBottomSide():void{
    this.directionInDeg = 360 - this.directionInDeg 
   }
 
@@ -80,7 +80,7 @@ export default class Ball {
     }
   }
 
-  verifyAngleAndProtectAgainstOffLimits() {
+  verifyAngleAndProtectAgainstOffLimits():void {
     if (this.directionInDeg >= 360) {
       this.directionInDeg = this.directionInDeg % 360
     } else if (this.directionInDeg < 0) {

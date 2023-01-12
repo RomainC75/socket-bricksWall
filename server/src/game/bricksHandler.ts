@@ -1,3 +1,4 @@
+import { BricksPositionsInterface } from '../@types/game'
 import Brick from './brick'
 
 const BRICK_STRIP_WIDTH = 100
@@ -51,7 +52,7 @@ export default class BricksHandler {
     return this.bricks
   }
 
-  getBricksPositions(){
+  getBricksPositions():BricksPositionsInterface[]{
     return this.bricks.map(brick=>{
       return{
         x:brick.getX(),

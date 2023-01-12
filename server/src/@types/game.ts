@@ -12,4 +12,20 @@ export interface PlayingGameInterface {
   io: Server
 }
 
+export interface NewPositionsInterface {
+  bar1Y: number,
+  bar2Y: number,
+  ball: [number, number],
+  bricks: BricksPositionsInterface[]
+}
 
+export interface BricksPositionsInterface {
+  x: number,
+  y: number,
+  color: string
+}
+
+export interface PointsInterface{
+  player1:number
+  player2:number
+}
